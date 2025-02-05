@@ -1,0 +1,80 @@
+:root {
+    --dark-color: #1D1616;
+    --red-color: #8E1616;
+    --light-red-color: #D84040;
+    --white-color: #EEEEEE;
+}
+
+.nav-pills .nav-link.active {
+    color: var(--white-color) !important;
+    background-color: var(--light-red-color) !important;
+}
+
+.nav-pills .nav-link {
+    color: var(--light-red-color) !important;
+}
+.nav-pills .nav-link:hover {
+    color: var(--red-color) !important;
+}
+
+.btn-primary {
+    color: var(--white-color);
+    background-color: var(--light-red-color);
+    border-color: var(--light-red-color);
+}
+
+.btn-primary:hover {
+    color: var(--white-color);
+    background-color: var(--red-color);
+    border-color: var(--red-color);
+}
+
+.btn-outline-secondary {
+    color: var(--dark-color);
+    border-color: var(--dark-color);
+}
+
+.btn-outline-primary {
+    color: var(--dark-color);
+    border-color: var(--dark-color);
+    background-color: var(--white-color);
+}
+.btn-outline-primary:hover {
+    color: var(--white-color);
+    border-color: var(--dark-color);
+    background-color: var(--dark-color);
+}
+
+.btn-outline-secondary:hover {
+    color: var(--white-color);
+    border-color: var(--dark-color);
+    background-color: var(--dark-color);
+}
+
+.shop-image {
+    width: 350px;
+    height: 500px;
+    border-radius: 10px;
+}
+
+.homepage-icon {
+    width: 51px;
+    height: 51px;
+    margin-right: 5rem;
+}
+
+#choose-us {
+    background-color: var(--light-red-color);
+    color: var(--white-color);
+}
+
+#footer {
+    background-color: var(--light-red-color);
+    color: var(--white-color);
+}
+
+.title {
+    font-size: large;
+    font-weight: bold;
+    color: var(--red-color);
+}
