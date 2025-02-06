@@ -11,7 +11,7 @@
 
     <section id="make-order">
         <div class="container py-5">
-            <h1 class="text-center fw-bold">Make an Order</h1>
+            <h1 class="text-center fw-bold">Make an Ready Made Order</h1>
 
             @if(session('error'))
             <div class="alert alert-danger col-6 mx-auto">{{ session('error') }}</div>

@@ -1,3 +1,16 @@
+@push('styles')
+    <style>
+        .btn-secondary.dropdown-toggle{
+            background-color: var(--dark-color);
+        }
+
+        .dropdown-menu.show {
+            margin-top: 5px !important;
+            border-color: var(--dark-color);
+        }
+    </style>
+@endpush
+
 <x-layouts.user.app>
     <section id="hero">
         <div class="container col-xxl-8 px-4 py-5">
@@ -14,7 +27,16 @@
                     <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                         <a href="{{ route('user.appointment.index') }}"
                             class="btn btn-primary btn-lg px-4 me-md-2">Make an Appointment</a>
-                        <a href="{{ route('user.order.index') }}" class="btn btn-outline-secondary btn-lg px-4">Order Now</a>
+                        {{-- <a href="{{ route('user.order.index') }}" class="btn btn-outline-secondary btn-lg px-4">Order Now</a> --}}
+                        <div class="btn-group">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Order Now
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ route('user.order.index',['order_type' => 'customized']) }}">Customized</a></li>
+                                <li><a class="dropdown-item" href="{{ route('user.order.index',['order_type' => 'ready_made']) }}">Ready Made</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>

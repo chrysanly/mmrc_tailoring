@@ -53,6 +53,8 @@ Route::middleware('auth')->group(function () {
 
         Route::prefix('order')->group(function () {
             Route::get('/', [OrderController::class, 'index'])->name('user.order.index');
+            Route::get('/payment', [OrderController::class, 'payment'])->name('user.order.payment');
+            Route::post('/store', [OrderController::class, 'store'])->name('user.order.store');
         });
    });
 
