@@ -6,7 +6,10 @@ use App\Http\Controllers\User\AppointmentController;
 use App\Http\Controllers\Authentication\SessionController;
 use App\Http\Controllers\Authentication\RegisteredUserController;
 use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentController;
+use App\Http\Controllers\Admin\Settings\PaymentController;
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\User\OrderController;
+use App\Models\Settings;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +44,24 @@ Route::middleware('auth')->group(function () {
            Route::get('/', [AdminAppointmentController::class, 'index'])->name('admin.appointment.index');
             Route::patch('/update-status/{appointment}', [AdminAppointmentController::class, 'updateStatus'])->name('admin.appointment.update-status');
 
+       });
+       Route::prefix('settings')->group(function () {
+            Route::prefix('appointment-limit')->group(function () {
+                Route::get('/', [SettingsController::class, 'viewAppointmentLimit'])->name('admin.settings.appointment-limit');
+                Route::post('/', [SettingsController::class, 'storeAppointmentLimit'])->name('admin.settings.appointment-limit.store');
+               
+            });
+            Route::prefix('payment-option')->group(function () {
+                Route::get('/', [PaymentController::class, 'index'])->name('admin.settings.payment-option');
+                
+                Route::prefix('api')->group(function () {
+                    Route::get('/get-all', [PaymentController::class, 'getAllPaymentOption'])->name('admin.settings.payment-option.get-all');
+                    Route::post('/store', [PaymentController::class, 'store'])->name('admin.settings.payment-option.store');
+                    Route::get('/edit/{paymentOption}', [PaymentController::class, 'edit'])->name('admin.settings.payment-option.edit');
+                    Route::patch('/update/{paymentOption}', [PaymentController::class, 'update'])->name('admin.settings.payment-option.update');
+                    Route::delete('/destroy/{paymentOptions}', [PaymentController::class, 'destroy'])->name('admin.settings.payment-option.destroy');
+                });
+            });
        });
    });
 

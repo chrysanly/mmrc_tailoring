@@ -16,6 +16,12 @@
 <!--begin::Required Plugin(AdminLTE)-->
 <script src="{{ asset('assets/js/adminlte.js') }}"></script>
 <!--end::Required Plugin(AdminLTE)-->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="{{ asset('assets/admin/js/main.js') }}"></script>
 <!--begin::OverlayScrollbars Configure-->
 <script>
     const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
@@ -37,6 +43,8 @@
         }
       });
 </script>
+
+@stack('scripts')
 <!--end::OverlayScrollbars Configure-->
 <!--end::Script-->
 </body>

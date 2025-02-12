@@ -13,10 +13,26 @@
                     @csrf
                     <h1 class="fs-1 fw-bold mb-4 title">GRRMC Tailoring</h1>
                     <div class="form-floating mb-3">
-                        <input type="text" name="name" class="form-control" id="floatingInput"
+                        <input type="text" name="first_name" class="form-control" id="floatingInput"
                             placeholder="John Doe">
-                        <label for="floatingInput">Name</label>
-                        @error('name')
+                        <label for="floatingInput">First Name</label>
+                        @error('first_name')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" name="last_name" class="form-control" id="floatingInput"
+                            placeholder="John Doe">
+                        <label for="floatingInput">Last Name</label>
+                        @error('last_name')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" name="middle_name" class="form-control" id="floatingInput"
+                            placeholder="John Doe">
+                        <label for="floatingInput">Middle Name</label>
+                        @error('middle_name')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>

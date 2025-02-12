@@ -24,7 +24,7 @@
                     <tbody>
                         @foreach($appointments as $appointment)
                         <tr>
-                            <td>{{ $appointment->user->name }}</td>
+                            <td>{{ $appointment->user->fullname }}</td>
                             <td>{{ $appointment->user->email }}</td>
                             <td>{{ $appointment->date }}</td>
                             <td class="text-center">

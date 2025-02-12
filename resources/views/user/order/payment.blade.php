@@ -49,8 +49,13 @@
                     <div>
                         <h5>Payment Methods</h5>
                         <div class="d-flex justify-content-around gap-5">
-                            <h1>GCash</h1>
-                            <h1>Paypal</h1>
+                            @foreach ($paymentOptions as $paymentOption)
+                                <div class="d-flex flex-column">
+                                    <h1>{{ $paymentOption->name }}</h1>
+                                    <span><b>Account Number:</b> {{ $paymentOption->account_number }}</span>
+                                    <span><b>Account Name:</b> {{ $paymentOption->account_name }}</span>
+                                </div>
+                            @endforeach
                         </div>
                         <div class="d-flex justify-content-end mt-4">
                             <div class="d-flex flex-row bg-primary gap-3 align-items-center py-1 px-2 rounded">

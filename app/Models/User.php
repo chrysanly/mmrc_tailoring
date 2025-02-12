@@ -18,7 +18,9 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
+        'middle_name',
         'email',
         'password',
         'role',
@@ -44,8 +46,16 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    protected $appends = [
+        'fullname',
+    ];
+
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+    public function getFullnameAttribute()
+    {
+        return "{$this->last_name}, {$this->first_name} {$this->middle_name}";
     }
 }

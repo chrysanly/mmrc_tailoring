@@ -2,25 +2,32 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
+use App\Models\Settings;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\AppointmentResource;
 
 class AppointmentController extends Controller
 {
     public function index()
     {
-        return view('user.appointment.index');
+        return view('user.appointment.index', [
+            'limit' => Settings::first()->appointment_limit ?? 0,
+        ]);
     }
 
     public function getAllAppointments()
     {
-        $appointments = Appointment::selectRaw('date, COUNT(*) as count')
-            ->groupBy('date')
-            ->get();
+        $appointments = Appointment::selectRaw('date, MAX(id) as id, MAX(user_id) as user_id')
+        ->groupBy('date')
+        ->with(['appointments' => function ($query) {
+            $query->select(['date', 'time_from', 'time_to', 'status']);
+        }])
+        ->get();
 
         return response()->json([
-            'appointments' => $appointments
+            'appointments' => AppointmentResource::collection($appointments),
         ]);
     }
     public function store(Request $request)
@@ -33,13 +40,33 @@ class AppointmentController extends Controller
             return redirect()->back()->with('error', 'You already have an appointment on this date: ' . $request->date);
         }
 
+        if ($request->time_from === null || $request->time_to === null) {
+            return redirect()->back()->with('error', 'Please select both start and end times for your appointment.');
+        }
+
+        $overlappingAppointment = Appointment::where('date', $request->date)
+            ->where(function ($query) use ($request) {
+                $query->whereBetween('time_from', [$request->time_from, $request->time_to])
+                      ->orWhereBetween('time_to', [$request->time_from, $request->time_to])
+                      ->orWhere(function ($query) use ($request) {
+                          $query->where('time_from', '<=', $request->time_from)
+                                ->where('time_to', '>=', $request->time_to);
+                      });
+            })
+            ->first();
+
+        if ($overlappingAppointment) {
+            return redirect()->back()->with('error', 'The selected time range overlaps with an existing appointment.');
+        }
+
         Appointment::create([
             'date' => $request->date,
+            'time_from' => $request->time_from,
+            'time_to' => $request->time_to,
             'user_id' => auth()->id()
         ]);
 
         return redirect()->back()->with('success', 'Appointment created successfully, please wait for the approval from the admin.');
-
     }
 
    

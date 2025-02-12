@@ -13,7 +13,7 @@ class AppointmentController extends Controller
     public function index()
     {
         return view('admin.appointment.index', [
-            'appointments' => Appointment::paginate(10)
+            'appointments' => Appointment::latest()->paginate(10)
         ]);
     }
 

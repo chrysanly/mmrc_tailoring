@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\PaymentOptions;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -51,6 +52,7 @@ class OrderController extends Controller
         return view('user.order.payment', [
             'order' => $order,
             'formType' => $form_type,
+            'paymentOptions' => PaymentOptions::all(),
         ]);
     }
 }

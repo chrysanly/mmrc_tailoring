@@ -16,6 +16,8 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class)->constrained()->noActionOnDelete();
             $table->string('date');
+            $table->time('time_from');
+            $table->time('time_to');
             $table->string('status')->default('pending');
             $table->timestamps();
         });

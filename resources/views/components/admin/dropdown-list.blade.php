@@ -1,8 +1,8 @@
-@props(['title' => '', 'icon' => ''])
+@props(['title' => '', 'icon' => '', 'active' => false])
 
-<li class="nav-item">
+<li class="nav-item {{ $active ? 'menu-open' : '' }}">
     <a href="#" class="nav-link">
-        <i class="nav-icon bi bi-speedometer"></i>
+        {{ $icon }}
         <p>
             {{ $title }}
             <i class="nav-arrow bi bi-chevron-right"></i>
