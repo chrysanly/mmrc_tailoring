@@ -3,67 +3,176 @@
 @section('title', 'Appointments')
 
 @section('content')
-<div class="row">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Appointments</h3>
-            </div>
 
-            <div class="card-body">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>User Name</th>
-                            <th>User Email</th>
-                            <th>Appointment Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($appointments as $appointment)
-                        <tr>
-                            <td>{{ $appointment->user->fullname }}</td>
-                            <td>{{ $appointment->user->email }}</td>
-                            <td>{{ $appointment->date }}</td>
-                            <td class="text-center">
-                                @if ($appointment->status === 'pending')
-                                <span class="badge rounded-pill text-bg-secondary">{{ $appointment->status }}</span>
-                                @elseif ($appointment->status === 'approved')
-                                <span class="badge rounded-pill text-bg-success">{{ $appointment->status }}</span>
-                                @else
-                                <span class="badge rounded-pill text-bg-danger">{{ $appointment->status }}</span>
-                                @endif
-                            </td>
-                            <td width="10%">
-                                <form action="{{ route('admin.appointment.update-status', [
-                                'appointment' => $appointment->id]) }}" method="POST" style="display:inline-block;">
-                                @csrf
-                                    @method('PATCH')
-                                    <input type="hidden" name="status" value="approved" id="">
-                                    <button type="submit" class="btn btn-sm btn-primary {{ $appointment->status !== 'pending' ? 'disabled' : '' }}">Approve</button>
-                                </form>
-                                <form action="{{ route('admin.appointment.update-status', [
-                                'appointment' => $appointment->id]) }}" method="POST" style="display:inline-block;">
-                                @csrf
-                                    @method('PATCH')
-                                    <input type="hidden" name="status" value="rejected" id="">
-                                    <button type="submit" class="btn btn-sm btn-danger {{ $appointment->status !== 'pending' ? 'disabled' : '' }}">Reject</button>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                <div class="mt-4">
-                    {{ $appointments->links() }}
+    @php
+        $tabs = [
+            [
+                'id' => 'pending',
+                'name' => 'Pending',
+                'route' => route('admin.appointment.index', [
+                    'status' => 'pending',
+                ]),
+            ],
+            [
+                'id' => 'in-progress',
+                'name' => 'In Progress',
+                'route' => route('admin.appointment.index', [
+                    'status' => 'in-progress',
+                ]),
+            ],
+            [
+                'id' => 'done',
+                'name' => 'Done',
+                'route' => route('admin.appointment.index', [
+                    'status' => 'done',
+                ]),
+            ],
+            [
+                'id' => 'completed',
+                'name' => 'Completed',
+                'route' => route('admin.appointment.index', [
+                    'status' => 'completed',
+                ]),
+            ],
+            [
+                'id' => 'no-show',
+                'name' => 'No Show',
+                'route' => route('admin.appointment.index', [
+                    'status' => 'no-show',
+                ]),
+            ],
+        ];
+    @endphp
+
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        @foreach ($tabs as $item)
+            <li class="nav-item" role="presentation">
+                <a href="{{ $item['route'] }}" class="nav-link {{ request('status') === $item['id'] ? 'active' : '' }}"
+                    id="{{ $item['id'] }}-tab" type="button" role="tab" aria-controls="{{ $item['id'] }}-tab-pane"
+                    aria-selected="{{ $item['id'] === 'pending' ? 'true' : 'false' }}">{{ $item['name'] }}</a>
+            </li>
+        @endforeach
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        @foreach ($tabs as $item)
+            <div class="tab-pane fade {{ $item['id'] === request('status') ? 'show active' : '' }}"
+                id="{{ $item['id'] }}-tab-pane" role="tabpanel" aria-labelledby="{{ $item['id'] }}-tab" tabindex="0">
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Appointments</h3>
+                            </div>
+
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>User Name</th>
+                                            <th>User Email</th>
+                                            <th>Appointment Date</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($appointments as $appointment)
+                                            <tr>
+                                                <td>{{ $appointment->user->fullname }}</td>
+                                                <td>{{ $appointment->user->email }}</td>
+                                                <td>{{ $appointment->date }}</td>
+                                                <td class="text-center">
+                                                    @if ($appointment->status === 'pending')
+                                                        <span class="badge rounded-pill text-bg-secondary">Pending</span>
+                                                    @elseif ($appointment->status === 'in-progress')
+                                                        <span class="badge rounded-pill text-bg-warning">
+                                                            In Progress - <span
+                                                                class="{{ $appointment->topMeasurement || $appointment->bottomMeasurement ? 'text-success' : 'text-danger' }}">({{ $appointment->topMeasurement || $appointment->bottomMeasurement ? 'measured' : 'pending measurement' }})</span>
+                                                        </span>
+                                                    @elseif ($appointment->status === 'done')
+                                                        <span class="badge rounded-pill text-bg-info">Done</span>
+                                                    @elseif ($appointment->status === 'completed')
+                                                        <span class="badge rounded-pill text-bg-success">Completed</span>
+                                                    @else
+                                                        <span class="badge rounded-pill text-bg-danger">No Show</span>
+                                                    @endif
+                                                </td>
+
+                                                <td>
+                                                    @if ($appointment->status !== 'no-show')
+                                                        <div class="dropdown">
+                                                        <button class="btn btn-danger btn-sm dropdown-toggle" type="button"
+                                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                                        </button>
+                                                        <ul class="dropdown-menu">
+                                                            @if ($appointment->status === 'pending')
+                                                                <li>
+                                                                    <x-admin.appointment-update-status :id="$appointment->id"
+                                                                        status="in-progress" button="Move to In Progress" />
+                                                                </li>
+                                                                <x-admin.appointment-update-status :id="$appointment->id"
+                                                                    status="no-show" button="Move to No Show" />
+                                                            @endif
+                                                            @if ($appointment->topMeasurement || $appointment->bottomMeasurement)
+                                                                @if ($appointment->status === 'in-progress')
+                                                                    <li>
+                                                                        <x-admin.appointment-update-status :id="$appointment->id"
+                                                                            status="done" button="Move to Done" />
+                                                                    </li>
+                                                                @endif
+                                                                @if ($appointment->status === 'done')
+                                                                    <x-admin.appointment-update-status :id="$appointment->id"
+                                                                        status="completed" button="Move to Complete" />
+                                                                    </li>
+                                                                @endif
+
+                                                                @if ($appointment->status !== 'completed' && $appointment->status !== 'no-show')
+                                                                    <li>
+                                                                        <hr class="dropdown-divider">
+                                                                    </li>
+                                                                @endif
+                                                                <li><a class="dropdown-item"
+                                                                        href="{{ route('admin.appointment.view-measurement', $appointment->id) }}"
+                                                                        target="_blank">View
+                                                                        Measurement</a></li>
+                                                            @endif
+                                                            @if ($appointment->status === 'in-progress' && !$appointment->topMeasurement && !$appointment->bottomMeasurement)
+                                                                <li>
+                                                                    <a href="{{ route('admin.appointment.get-measurement', $appointment->id) }}"
+                                                                        class="dropdown-item">Get
+                                                                        Measurement</a>
+                                                                </li>
+                                                            @endif
+                                                        </ul>
+                                                    </div>
+                                                    @endif
+
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                                <div class="mt-4">
+                                    {{ $appointments->links() }}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.col -->
                 </div>
+                <!-- /.row -->
             </div>
-        </div>
-        <!-- /.card -->
+        @endforeach
     </div>
-    <!-- /.col -->
-</div>
-<!-- /.row -->
+
 @endsection
+
+@push('scripts')
+    <script>
+        function openModal(id) {
+            var modal = new bootstrap.Modal(document.getElementById(id));
+            modal.show();
+        }
+    </script>
+@endpush

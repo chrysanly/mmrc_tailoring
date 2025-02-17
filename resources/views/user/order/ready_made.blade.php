@@ -1,8 +1,31 @@
 @push('styles')
     <style>
-        #make-order {
-        /* background: url("{{ asset('images/user/order.jpg') }}") no-repeat center center/cover; */
-        height: 100vh;
+        .card-header {
+            color: var(--white-color);
+            background-color: var(--dark-color);
+        }
+
+        .form-check-input {
+            border: 1px solid var(--dark-color);
+        }
+
+        .form-check-input:checked {
+            background-color: var(--red-color);
+            border-color: var(--red-color);
+        }
+
+        .alert-danger1 {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #set-of-uniform,
+        #set-of-uniform-with-vest,
+        #set-of-uniform-with-blazer,
+        #upload-type {
+            display: none;
         }
     </style>
 @endpush
@@ -11,14 +34,71 @@
 
     <section id="make-order">
         <div class="container py-5">
-            <h1 class="text-center fw-bold">Make an Ready Made Order</h1>
+            <h1 class="text-center fw-bold">Order Ready Made</h1>
 
-            @if(session('error'))
-            <div class="alert alert-danger col-6 mx-auto">{{ session('error') }}</div>
-            @enderror
-            @if(session('success'))
-            <div class="alert alert-success col-6 mx-auto">{{ session('success') }}</div>
-            @enderror
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            <form class="mb-4" action="{{ route('user.order.store.ready-made') }}" method="post"
+                enctype="multipart/form-data">
+                @csrf
+                <div class="form-check py-3">
+                    <input class="form-check-input" type="checkbox" value="" id="checkUploadFile">
+                    <label class="form-check-label fw-bold" for="checkUploadFile">
+                        File upload for order ?
+                    </label>
+                </div>
+
+                <input type="hidden" name="form_type" id="form_type" value="{{ old('form_type') }}">
+                <input type="hidden" name="order_type" value="customized">
+
+                <div class="d-flex justify-content-around gap-3 align-items-start">
+                    <div class="d-flex flex-column gap-3 col-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Guide on how to measure yourself</h5>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="d-flex justify-content-around gap-4">
+                                    <img src="{{ asset('assets/images/pants.png') }}" width="150" height="150"
+                                        alt="pants-measure">
+                                    <img src="{{ asset('assets/images/polo.png') }}" width="150" height="150"
+                                        alt="polo-measure">
+                                </div>
+                            </div>
+                        </div>
+                        <x-ready-made-uniform-type />
+                        <div class="card" id="upload-type">
+                            <x-uniform-upload-order-ready-made />
+                        </div>
+
+                        @include('user.order.additional-items')
+
+                        <input type="hidden" name="top" id="hiddenTop" value="{{ old('top') }}">
+                        <input type="hidden" name="bottom" id="hiddenBottom" value="{{ old('bottom') }}">
+                        <button type="submit" class="btn btn-primary">Submit Order</button>
+                    </div>
+                    @include('user.order.uniform_prices')
+                </div>
+            </form>
 
         </div>
     </section>

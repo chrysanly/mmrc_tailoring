@@ -1,8 +1,8 @@
 :root {
-    --dark-color: #1D1616;
-    --red-color: #8E1616;
-    --light-red-color: #D84040;
-    --white-color: #EEEEEE;
+    --dark-color: #1d1616;
+    --red-color: #8e1616;
+    --light-red-color: #d84040;
+    --white-color: #eeeeee;
 }
 
 .nav-pills .nav-link.active {
@@ -34,12 +34,34 @@
     border-color: var(--dark-color);
 }
 
-.btn-outline-primary {
-    color: var(--dark-color);
+.btn-secondary {
+    color: var(--white-color);
     border-color: var(--dark-color);
-    background-color: var(--white-color);
+    background-color: var(--dark-color);
+}
+
+.btn-secondary:hover, .btn-secondary:active, .btn-secondary:focus {
+    color: var(--white-color);
+    border-color: var(--light-red-color);
+    background-color: var(--light-red-color);
+}
+
+.btn-outline-primary {
+    color: var(--white-color);
+    border-color: var(--light-red-color);
+    background-color: var(--light-red-color);
 }
 .btn-outline-primary:hover {
+    color: var(--white-color);
+    border-color: var(--dark-color);
+    background-color: var(--dark-color);
+}
+
+.btn-check:checked + .btn,
+.btn.active,
+.btn.show,
+.btn:first-child:active,
+:not(.btn-check) + .btn:active {
     color: var(--white-color);
     border-color: var(--dark-color);
     background-color: var(--dark-color);
@@ -69,12 +91,30 @@
 }
 
 #footer {
-    background-color: var(--light-red-color);
-    color: var(--white-color);
+    background-color: var(--white-color) !important;
+    color: var(--light-red-color) !important;
 }
 
 .title {
     font-size: large;
     font-weight: bold;
     color: var(--red-color);
+}
+
+.bg-dark-mmrc {
+    background-color: var(--dark-color) !important;
+    color: var(--white-color) !important;
+}
+
+.accordion-button::after {
+    filter: invert(5);
+}
+
+.btn-secondary.dropdown-toggle {
+    background-color: var(--dark-color);
+}
+
+.dropdown-menu.show {
+    margin-top: 5px !important;
+    border-color: var(--dark-color);
 }

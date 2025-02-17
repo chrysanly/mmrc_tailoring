@@ -1,8 +1,13 @@
-function swalMessage(message, title = "Validation Error", icon = "error") {
+function swalMessage(message, title = "Validation Error", icon = "error", refresh = false) {
     return Swal.fire({
         icon: icon,
         title: title,
         html: message,
+        confirmButton: "OK",
+    }).then((result) => {
+        if (refresh && result.isConfirmed) {
+            location.reload(); // Refresh the page when "OK" is clicked
+        }
     });
 }
 
@@ -25,8 +30,6 @@ function ajaxGetRequest(url) {
 }
 
 function ajaxPostRequest(url, data) {
-    console.log(...data);
-    
     return new Promise((resolve, reject) => {
         $.ajax({
             url: url,

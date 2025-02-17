@@ -69,7 +69,7 @@ function fetchPaymentOptions(page = 1) {
                         <td>${option.name}</td>
                         <td>${option.account_number}</td>
                         <td>${option.account_name}</td>
-                        <td>
+                        <td widt="15%">
                         <button type="button" class="btn btn-primary" onclick="editPaymentOption('${option.id}')">Edit</button>
                         <button type="button" class="btn btn-danger" onclick="deletePaymentOption('${option.id}')">Delete</button>
                         </td>

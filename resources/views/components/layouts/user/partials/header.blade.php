@@ -10,26 +10,69 @@
             </a>
 
             <ul class="nav nav-pills">
-                <li class="nav-item"><a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" aria-current="page">Home</a></li>
-                <li class="nav-item"><a href="{{ route('user.appointment.index') }}" class="nav-link {{ request()->routeIs('user.appointment.index') ? 'active' : '' }}">Appointment</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">My Orders</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">Account</a></li>
+                <li class="nav-item">
+                    <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}"
+                        aria-current="page">
+                        <i class="bi bi-house-door"></i> Home
+                    </a>
+                </li>
+
                 @auth
-                @if (auth()->user()->role === 'superadmin')
-                <li class="nav-item"><a href="{{ route('admin.dashboard') }}" class="nav-link">Dashboard</a></li>
-                @endif
+                    @if (auth()->user()->role === 'user')
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {{ request()->routeIs('user.appointment.*') ? 'active' : '' }}"
+                                href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-calendar-check"></i> Appointment
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ route('user.appointment.index') }}"><i
+                                            class="bi bi-calendar-plus"></i> Make an Appointment</a></li>
+                                <li><a class="dropdown-item" href="{{ route('user.appointment.my-appointment') }}"><i class="bi bi-calendar-check"></i> My
+                                        Appointments</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {{ request()->routeIs('user.order.*') ? 'active' : '' }}"
+                                href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-bag"></i> Order
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item orderNow" href="#"><i class="bi bi-bag-plus"></i> Order
+                                        Now</a></li>
+                                <li><a class="dropdown-item" href="{{ route('user.order.my-orders') }}"><i
+                                            class="bi bi-list-check"></i> My Orders</a></li>
+                            </ul>
+                        </li>
+                        {{-- <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="bi bi-person-circle"></i> Account
+                            </a>
+                        </li> --}}
+                    @endif
+                @endauth
+                {{-- <li class="nav-item"><a href="{{ route('user.order.my-orders') }}"
+                        class="nav-link {{ request()->routeIs('user.order.my-orders') ? 'active' : '' }}">My Orders</a>
+                </li> --}}
+
+                @auth
+                    @if (auth()->user()->role === 'superadmin' || auth()->user()->role === 'admin')
+                        <li class="nav-item">
+                            <a href="{{ route('admin.dashboard') }}" class="nav-link">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
+                        </li>
+                    @endif
                 @endauth
 
-                @guest
-                <li class="nav-item"><a href="{{ route('login') }}" class="nav-link">Login</a></li>
-                @endguest
                 @auth
-                <li class="nav-item">
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="nav-link">Logout</button>
-                    </form>
-                </li>
+                    <li class="nav-item">
+                        <form action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="nav-link">
+                                <i class="bi bi-box-arrow-right"></i> Logout
+                            </button>
+                        </form>
+                    </li>
                 @endauth
             </ul>
         </header>

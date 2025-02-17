@@ -32,6 +32,7 @@
         .bg-body-tertiary {
             background-color: var(--white-color) !important;
         }
+        
     </style>
 
 </head>

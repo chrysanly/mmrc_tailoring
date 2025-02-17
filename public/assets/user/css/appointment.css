@@ -1,0 +1,89 @@
+:root {
+    --fc-border-color: var(--dark-color);
+    --fc-daygrid-event-dot-width: 5px;
+}
+
+
+#make-appointment {
+    height: 100vh;
+}
+
+.fc-view-harness {
+    border: 1px solid var(--fc-border-color);
+    height: 75vh !important;
+}
+
+.fc-day {
+    cursor: pointer;
+}
+
+.fc-daygrid-day-number {
+    text-decoration: none;
+    color: var(--red-color);
+    font-weight: bold;
+}
+
+.fc-col-header-cell-cushion {
+    text-decoration: none;
+    text-transform: uppercase;
+    color: var(--light-red-color);
+}
+
+.fc-next-button.fc-button-primary:hover,
+.fc-prev-button.fc-button-primary:hover {
+    background-color: var(--red-color);
+    border-color: var(--red-color);
+}
+
+.fc-next-button.fc-button-primary,
+.fc-prev-button.fc-button-primary {
+    background-color: var(--dark-color);
+    border-color: var(--dark-color);
+}
+
+.fc-button.fc-today-button.fc-button-primary {
+    background-color: var(--dark-color);
+    border-color: var(--dark-color);
+    text-transform: uppercase;
+}
+
+.appointment-count-badge {
+    position: absolute;
+    top: 5px;
+    font-size: larger;
+    background-color: var(--red-color);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 50%;
+}
+
+.fc-event-title-container,
+.fc-daygrid-event-harness {
+    display: none;
+}
+
+.max-limit-day {
+    background-color: #f8d7da !important;
+    cursor: not-allowed;
+}
+
+.disabled-day {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
+.fc-daygrid-day-frame {
+    overflow: hidden;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    /* For Firefox */
+}
+
+.fc-daygrid-day-frame::-webkit-scrollbar {
+    display: none;
+    /* For Chrome, Safari, and Opera */
+}
+
+.fc td {
+    padding: 5px;
+}

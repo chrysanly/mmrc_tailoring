@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Appointment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -13,16 +14,10 @@ class SendUserAppointmentStatus extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $status;
-    public $date;
     /**
      * Create a new message instance.
      */
-    public function __construct($status, $date)
-    {
-        $this->status = $status;
-        $this->date = $date;
-    }
+    public function __construct(public Appointment $appointment) {}
 
     /**
      * Get the message envelope.

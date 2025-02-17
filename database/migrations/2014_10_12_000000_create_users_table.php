@@ -25,13 +25,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        User::factory()->create([
-            'first_name' => 'John',
-            'last_name' => 'Doe',
-            'middle_name' => 'Superadmin',
-            'email' => 'superadmin@gmail.com',
-            'role' => 'superadmin',
-        ]);
     }
 
     /**

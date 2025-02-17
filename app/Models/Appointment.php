@@ -20,4 +20,25 @@ class Appointment extends Model
     {
         return $this->hasMany(Appointment::class, 'date', 'date');
     }
+
+    public function topMeasurement()
+    {
+        return $this->hasOne(AppointmentTopMeasurement::class);
+    }
+    public function bottomMeasurement()
+    {
+        return $this->hasOne(AppointmentBottomMeasurement::class);
+    }
+    public function getSetAttribute($value)
+    {
+        return $value ? ucwords($value) : 'N/A';
+    }
+    public function getTopAttribute($value)
+    {
+        return $value ? ucwords($value) : 'N/A';
+    }
+    public function getBottomAttribute($value)
+    {
+        return $value ? ucwords($value) : 'N/A';
+    }
 }

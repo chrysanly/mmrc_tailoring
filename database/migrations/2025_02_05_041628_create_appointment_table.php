@@ -19,6 +19,10 @@ return new class extends Migration
             $table->time('time_from');
             $table->time('time_to');
             $table->string('status')->default('pending');
+            $table->string('top')->nullable();
+            $table->string('bottom')->nullable();
+            $table->string('school')->nullable();
+            $table->string('set')->nullable();
             $table->timestamps();
         });
     }

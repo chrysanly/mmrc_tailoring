@@ -18,7 +18,7 @@
             <div class="card-body">
                 <form action="{{ route('admin.settings.appointment-limit.store') }}" method="post">
                     @csrf
-                    <x-admin.input-field label="Appointment Limit (Per Day)" name="limit" value="{{ old('limit', $limit) }}" />
+                    <x-admin.input-field label="Appointment Limit (Per Day)" name="limit" value="{{ $limit }}" />
                     <button type="submit" class="btn btn-primary w-100 mt-2">Save</button>
                 </form>
             </div>

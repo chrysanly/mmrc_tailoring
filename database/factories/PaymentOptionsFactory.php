@@ -17,7 +17,9 @@ class PaymentOptionsFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->name(),
+            'account_number' => fake()->phoneNumber(),
+            'account_name' => fake()->name(),
         ];
     }
 }

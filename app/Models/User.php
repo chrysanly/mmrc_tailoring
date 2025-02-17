@@ -54,6 +54,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
     public function getFullnameAttribute()
     {
         return "{$this->last_name}, {$this->first_name} {$this->middle_name}";

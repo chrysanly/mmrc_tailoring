@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('top')->nullable();
             $table->string('bottom')->nullable();
             $table->string('set')->nullable();
+            $table->string('quantity')->nullable();
+            $table->string('size')->nullable();
             $table->string('path')->nullable();
             $table->timestamps();
         });

@@ -46,7 +46,7 @@ class PaymentController extends Controller
     {
         $request->validate([
             'name' => 'required|unique:payment_options,name,' . ($paymentOptions->id ?? 'NULL'),
-            'account_number' => 'required',
+            'account_number' => 'required|numeric',
             'account_name' => 'required',
         ]);
 
