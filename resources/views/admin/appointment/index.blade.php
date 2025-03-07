@@ -7,6 +7,13 @@
     @php
         $tabs = [
             [
+                'id' => 'all',
+                'name' => 'All',
+                'route' => route('admin.appointment.index', [
+                    'status' => 'all',
+                ]),
+            ],
+            [
                 'id' => 'pending',
                 'name' => 'Pending',
                 'route' => route('admin.appointment.index', [
@@ -41,6 +48,13 @@
                     'status' => 'no-show',
                 ]),
             ],
+            [
+                'id' => 'cancelled',
+                'name' => 'Cancelled',
+                'route' => route('admin.appointment.index', [
+                    'status' => 'cancelled',
+                ]),
+            ],
         ];
     @endphp
 
@@ -68,19 +82,27 @@
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
+                                            <th width="5">#</th>
                                             <th>User Name</th>
                                             <th>User Email</th>
                                             <th>Appointment Date</th>
                                             <th>Status</th>
+                                            @if (request('status') === 'cancelled')
+                                                <th>Remarks</th>
+                                            @endif
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($appointments as $appointment)
                                             <tr>
+                                                <td width="5">{{ $appointment->id }}</td>
                                                 <td>{{ $appointment->user->fullname }}</td>
                                                 <td>{{ $appointment->user->email }}</td>
                                                 <td>{{ $appointment->date }}</td>
+                                                @if (request('status') === 'cancelled')
+                                                <td>Cancelled Remarks example</td>
+                                            @endif
                                                 <td class="text-center">
                                                     @if ($appointment->status === 'pending')
                                                         <span class="badge rounded-pill text-bg-secondary">Pending</span>

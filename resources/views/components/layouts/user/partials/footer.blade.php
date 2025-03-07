@@ -3,8 +3,12 @@
 
         <div class="d-flex justify-content-around align-items-center">
             <div>
-                <h5>Opening Hours</h5>
-                <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                <h5>Operating Hours (March 3 - 8)</h5>
+                <p>Monday: 9:00 AM - 6:00 PM</p>
+                <p>Tuesday: 9:00 AM - 6:00 PM</p>
+                <p>Wednesday: 9:00 AM - 12:00 PM</p>
+                <p>Thursday: 9:00 AM - 6:00 PM</p>
+                <p>Friday: 9:00 AM - 6:00 PM</p>
                 <p>Saturday: 8:00 AM - 5:00 PM</p>
             </div>
             <div>

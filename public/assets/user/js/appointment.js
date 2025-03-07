@@ -132,4 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     calendar.render();
+
+    const modal = new bootstrap.Modal(document.getElementById("appointmentGuideModal"));
+    modal.show();
 });

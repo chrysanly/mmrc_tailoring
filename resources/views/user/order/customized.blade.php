@@ -78,8 +78,10 @@
                             <div class="card-body">
 
                                 <div class="d-flex justify-content-around gap-4">
-                                    <img src="{{ asset('assets/images/pants.png') }}" width="150" height="150"
-                                        alt="pants-measure">
+                                    <a href="{{ asset('assets/images/pants.png') }}" target="__blank">
+                                        <img src="{{ asset('assets/images/pants.png') }}"  width="150" height="150"
+                                            alt="pants-measure">
+                                    </a>
                                     <img src="{{ asset('assets/images/polo.png') }}" width="150" height="150"
                                         alt="polo-measure">
                                 </div>

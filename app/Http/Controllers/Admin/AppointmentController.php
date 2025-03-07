@@ -26,10 +26,8 @@ class AppointmentController extends Controller
     public function index()
     {
         $appointments = Appointment::with('topMeasurement.measurable', 'bottomMeasurement.measurable')
-            ->when(request('status') !== null, function ($query) {
+            ->when(request('status') !== 'all', function ($query) {
                 $query->whereStatus(request('status'));
-            }, function ($query) {
-                $query->whereStatus('pending');
             })->latest('updated_at')->paginate(10);
         return view('admin.appointment.index', [
             'appointments' => $appointments,
