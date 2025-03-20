@@ -23,6 +23,7 @@ class AppointmentResource extends JsonResource
                 'time_from' => Carbon::parse($appointment->time_from)->format('g:i A'),
                 'time_to' => Carbon::parse($appointment->time_to)->format('g:i A'),
                 'status' => $appointment->status,
+                'my_appointment' => $appointment->user_id === auth()->id(),
             ]),
         ];
     }

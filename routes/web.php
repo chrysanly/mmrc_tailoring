@@ -109,6 +109,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/my-appointment', [AppointmentController::class, 'viewMyAppointment'])->name('user.appointment.my-appointment');
             Route::get('/fetch-appointments', [AppointmentController::class, 'getAllAppointments'])->name('user.appointment.fetch-appointments');
             Route::post('/store', [AppointmentController::class, 'store'])->name('user.appointment.store');
+            Route::put('/cancel/{appointment}', [AppointmentController::class, 'cancelAppointment'])->name('user.appointment.cancel-appointment');
         });
 
 

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Tailoring - @yield('title', '')</title>
 
     <!-- Fonts -->
@@ -30,7 +30,7 @@
 
     @yield('content')
 
-    <x-layouts.user.partials.footer />
+    @include('layouts.footer');
 
     <!-- Modal -->
     <div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
@@ -55,13 +55,12 @@
             </div>
         </div>
     </div>
-
-    @stack('scripts')
-
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('assets/main.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const orderBtns = document.querySelectorAll('.orderNow');
@@ -74,6 +73,7 @@
             });
         });
     </script>
+    @stack('scripts')
 </body>
 
 </html>
