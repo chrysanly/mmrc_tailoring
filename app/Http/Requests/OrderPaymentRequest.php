@@ -25,7 +25,7 @@ class OrderPaymentRequest extends FormRequest
         return [
             'contact_number' => 'required|numeric|digits:11',
             'referrence_number' => 'required|numeric',
-            'amount' => 'required|numeric',
+            'type' => 'required|string',
             'account_name' => 'required|string|min:4',
             'file' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
         ];

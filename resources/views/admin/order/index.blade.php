@@ -203,7 +203,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="card-title">Invoice</div>
                             ${! invoice.is_paid ? `
-                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="addDiscount('${invoice.id}')">${invoice.discount === null ? 'Add' : 'Update'} Discount</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="addDiscount('${invoice.id}')">${invoice.discount === null ? 'Add' : 'Update'} Discount (%)</button>
                             ` : `
                             <span class="badge text-bg-success">Paid</span>
                             `}
@@ -265,10 +265,26 @@
                         payments.forEach(payment => {
                             paymentList.innerHTML += `
                             <div class="d-flex justify-content-evenly align-items-center mt-4">
-                                <p>Contact Number: ${payment.contact_number}</p>
-                                <p>Referrence Number: ${payment.referrence_number}</p>
-                                <p>Account Name: ${payment.account_name}</p>
-                                <p>Amount: ${payment.amount}</p>
+                                <div class="d-flex flex-column">
+                                    <b>Contact Number:</b> 
+                                    ${payment.contact_number}
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <b>Referrence Number:</b> 
+                                    ${payment.referrence_number}
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <b>Account Name:</b> 
+                                    ${payment.account_name}
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <b>Amount:</b> 
+                                    ${payment.amount}
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <b>Type:</b> 
+                                    ${payment.type === 'down' ? 'Down Payment' : 'Full Payment'}
+                                </div>
                                 <a href="${payment.file_url}" target="_blank">
                                      ${payment.file_url ? `<img src="${payment.file_url}" alt="Payment Image" width="100">` : ''}
                                     </a>
@@ -502,6 +518,13 @@
     @php
         $tabs = [
             [
+                'id' => 'all',
+                'name' => 'All',
+                'route' => route('admin.order.index', [
+                    'status' => 'all',
+                ]),
+            ],
+            [
                 'id' => 'pending',
                 'name' => 'Pending',
                 'route' => route('admin.order.index', [
@@ -697,7 +720,7 @@
                     <h1 class="modal-title fs-5" id="addDiscountModalLabel">Add Discount</h1>
                 </div>
                 <div class="modal-body">
-                    <x-admin.input-field name="discount" type="number" label="Discount" />
+                    <x-admin.input-field name="discount" type="number" label="Discount (%)" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" id="discountBackButton" data-bs-dismiss="modal">Back</button>

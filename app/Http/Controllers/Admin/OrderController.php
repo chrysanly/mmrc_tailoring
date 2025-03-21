@@ -20,10 +20,8 @@ class OrderController extends Controller
     public function index()
     {
         $order = Order::with('topMeasurement', 'topMeasurement.measurable')
-            ->when(request('status') !== null, function ($query) {
+            ->when(request('status') !== 'all', function ($query) {
                 $query->whereStatus(request('status'));
-            }, function ($query) {
-                $query->whereStatus('pending');
             })
             ->latest()
             ->paginate(10)

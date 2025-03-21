@@ -17,7 +17,7 @@ use App\Models\UniformPrice;
 use Illuminate\Http\Request;
 use App\Models\PaymentOptions;
 use App\Models\UniformPriceItem;
-use App\Http\Traits\paymentTrait;
+use App\Http\Traits\PaymentTrait;
 use App\Http\Traits\UniformTrait;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\OrderRequest;
@@ -30,7 +30,7 @@ use App\Http\Requests\OrderReadyMadeRequest;
 class OrderController extends Controller
 {
     use UniformTrait;
-    use paymentTrait;
+    use PaymentTrait;
     public function index(Request $request)
     {
         if ($request->order_type === 'customized') {
@@ -221,19 +221,22 @@ class OrderController extends Controller
         $downPayment = $order->invoice->total / 2;
         $settlementPayment = $order->invoice->total - $order->invoice->total_payment;
 
-        if ((int) $request->amount !== (int) $downPayment && $order->payment_status === 'Unpaid') {
-            alert()->error('Payment Failed', 'The amount must be equal to the required down payment.');
-            return redirect()->back()->withInput();
+        $amount = 0;
+        if ($request->type == 'down') {
+            $amount = $order->invoice->total / 2;
         }
+
         if ($order->status === 'in-progress') {
             alert()->error('Payment Failed', 'Your order is still in progress. Please wait for an email from the admin when it’s ready so you can settle the remaining balance.');
             return redirect()->back()->withInput();
         }
-        if ((int) $settlementPayment !== (int) $request->amount && $order->payment_status === 'Settlement Payment') {
+
+        if ((int) $settlementPayment !== (int) $amount && $order->payment_status === 'Settlement Payment') {
             alert()->error('Payment Failed', 'The amount must be equal to the required balance payment.');
             return redirect()->back()->withInput();
         }
        
+        $validatedData['amount'] = $amount;
         $payment = OrderPayment::create($validatedData);
 
         if ($file) {

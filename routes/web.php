@@ -33,36 +33,37 @@ Route::get('/', function () {
 Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
     Route::post('/register/store', [RegisteredUserController::class, 'store'])->name('register.store');
-    
+
     Route::get('/login', [SessionController::class, 'create'])->name('login');
     Route::post('/login/store', [SessionController::class, 'store'])->name('login.store');
 });
 
 Route::middleware('auth')->group(function () {
-   Route::post('/logout', [SessionController::class, 'destroy'])->name('logout');
+    Route::post('/logout', [SessionController::class, 'destroy'])->name('logout');
 
-   Route::prefix('admin')->middleware('role.admin')->group(function () {
-       Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::prefix('admin')->middleware('role.admin')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
-       Route::prefix('appointment')->group(function () {
-           Route::get('/', [AdminAppointmentController::class, 'index'])->name('admin.appointment.index');
-           Route::get('/get-measurement/{appointment}', [AdminAppointmentController::class, 'getMeasurement'])->name('admin.appointment.get-measurement');
-           Route::get('/view-measurement/{appointment}', [AdminAppointmentController::class, 'viewMeasurement'])->name('admin.appointment.view-measurement');
-           Route::post('/store-measurement/{appointment}', [AdminAppointmentController::class, 'storeMeasurement'])->name('admin.appointment.store-measurement');
+        Route::prefix('appointment')->group(function () {
+            Route::get('/', [AdminAppointmentController::class, 'index'])->name('admin.appointment.index');
+            Route::get('/get-measurement/{appointment}', [AdminAppointmentController::class, 'getMeasurement'])->name('admin.appointment.get-measurement');
+            Route::get('/view-measurement/{appointment}', [AdminAppointmentController::class, 'viewMeasurement'])->name('admin.appointment.view-measurement');
+            Route::post('/store-measurement/{appointment}', [AdminAppointmentController::class, 'storeMeasurement'])->name('admin.appointment.store-measurement');
             Route::patch('/update-status/{appointment}', [AdminAppointmentController::class, 'updateStatus'])->name('admin.appointment.update-status');
-
-       });
-       Route::prefix('order')->group(function () {
-           Route::get('/', [AdminOrderController::class, 'index'])->name('admin.order.index');
-           Route::patch('/update-status/{order}', [AdminOrderController::class, 'updateStatus'])->name('admin.order.update-status');
+            Route::patch('/resched/{appointment}', [AdminAppointmentController::class, 'reschedule'])->name('admin.appointment.reschedule');
+            Route::patch('/cancel/{appointment}', [AdminAppointmentController::class, 'cancelAppointment'])->name('admin.appointment.cancel');
+        });
+        Route::prefix('order')->group(function () {
+            Route::get('/', [AdminOrderController::class, 'index'])->name('admin.order.index');
+            Route::patch('/update-status/{order}', [AdminOrderController::class, 'updateStatus'])->name('admin.order.update-status');
             Route::prefix('api')->group(function () {
                 Route::get('/view/{order}', [AdminOrderController::class, 'viewOrder'])->name('admin.order.view');
                 Route::post('/payment/verified/{orderPayment}', [AdminOrderController::class, 'paymentVerified'])->name('admin.order.payment.verified');
                 Route::patch('/invoice/discount/{orderInvoice}', [AdminOrderController::class, 'discount'])->name('admin.order.discount');
             });
-       });
-       Route::prefix('uniform-prices')->middleware('role.superadmin')->group(function () {
-           Route::get('/', [UniformPriceController::class, 'index'])->name('admin.uniform-price.index');
+        });
+        Route::prefix('uniform-prices')->middleware('role.superadmin')->group(function () {
+            Route::get('/', [UniformPriceController::class, 'index'])->name('admin.uniform-price.index');
             Route::prefix('api')->group(function () {
                 Route::get('/get-all', [UniformPriceController::class, 'fetchUniforms'])->name('admin.uniform-price.fetch-uniform');
                 Route::get('/get-all/price-lists/{uniform}', [UniformPriceController::class, 'fetchUniformsPrice'])->name('admin.uniform-price.fetch-uniform.price-lists');
@@ -75,23 +76,22 @@ Route::middleware('auth')->group(function () {
                 Route::delete('/destroy-uniform/{uniform}', [UniformPriceController::class, 'destroyUniform'])->name('admin.uniform-price.destroy-uniform');
                 Route::delete('/destroy-uniform/price-list/{uniformPriceItem}', [UniformPriceController::class, 'destroyUniformPriceList'])->name('admin.uniform-price.destroy-uniform.price-list');
             });
-       });
+        });
 
-       Route::prefix('admin-users')->middleware('role.superadmin')->group(function () {
-           Route::get('/', [UserController::class, 'index'])->name('admin.admin-users.index');
-           Route::get('/create', [UserController::class, 'create'])->name('admin.admin-users.create');
-           Route::get('/{user}', [UserController::class, 'edit'])->name('admin.admin-users.edit');
-           Route::post('/', [UserController::class, 'store'])->name('admin.admin-users.store');
-       });
-       Route::prefix('settings')->middleware('role.superadmin')->group(function () {
+        Route::prefix('admin-users')->middleware('role.superadmin')->group(function () {
+            Route::get('/', [UserController::class, 'index'])->name('admin.admin-users.index');
+            Route::get('/create', [UserController::class, 'create'])->name('admin.admin-users.create');
+            Route::get('/{user}', [UserController::class, 'edit'])->name('admin.admin-users.edit');
+            Route::post('/', [UserController::class, 'store'])->name('admin.admin-users.store');
+        });
+        Route::prefix('settings')->middleware('role.superadmin')->group(function () {
             Route::prefix('appointment-limit')->group(function () {
                 Route::get('/', [AppointmentLimitController::class, 'view'])->name('admin.settings.appointment-limit');
                 Route::post('/', [AppointmentLimitController::class, 'store'])->name('admin.settings.appointment-limit.store');
-               
             });
             Route::prefix('payment-option')->group(function () {
                 Route::get('/', [PaymentController::class, 'index'])->name('admin.settings.payment-option');
-                
+
                 Route::prefix('api')->group(function () {
                     Route::get('/get-all', [PaymentController::class, 'getAllPaymentOption'])->name('admin.settings.payment-option.get-all');
                     Route::post('/store', [PaymentController::class, 'store'])->name('admin.settings.payment-option.store');
@@ -100,10 +100,10 @@ Route::middleware('auth')->group(function () {
                     Route::delete('/destroy/{paymentOptions}', [PaymentController::class, 'destroy'])->name('admin.settings.payment-option.destroy');
                 });
             });
-       });
-   });
+        });
+    });
 
-   Route::prefix('user')->middleware('role.user')->group(function () {
+    Route::prefix('user')->middleware('role.user')->group(function () {
         Route::prefix('appointment')->group(function () {
             Route::get('/', [AppointmentController::class, 'index'])->name('user.appointment.index');
             Route::get('/my-appointment', [AppointmentController::class, 'viewMyAppointment'])->name('user.appointment.my-appointment');
@@ -122,8 +122,5 @@ Route::middleware('auth')->group(function () {
             Route::post('/store/ready-made', [OrderController::class, 'storeReadyMade'])->name('user.order.store.ready-made');
             Route::post('/store/payment/{order}', [OrderController::class, 'storePayment'])->name('user.order.store-payment');
         });
-   });
-
-   
-  
-}); 
+    });
+});

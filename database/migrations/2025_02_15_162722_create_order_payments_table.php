@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('account_name');
             $table->decimal('amount');
             $table->boolean('is_verified')->default(false);
+            $table->string('type')->nullable();
             $table->timestamps();
         });
     }

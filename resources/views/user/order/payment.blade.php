@@ -213,7 +213,10 @@
                         <form action="{{ route('user.order.store-payment', $order) }}" method="post"
                             enctype="multipart/form-data">
                             @csrf
-                            <x-admin.input-field name="amount" type="text" label="Amount to Pay" />
+                            <x-user.select name="type" title="Amount to Pay" :col="12" >
+                                <option value="down" {{ old('type')  == 'down' ? 'selected' : '' }}>Down Payment</option>
+                                <option value="full" {{ old('type') == 'full' ? 'selected' : '' }}>Full Payment</option>
+                            </x-user.select>
                             <x-admin.input-field name="contact_number" type="text" label="Contact Number" />
                             <x-admin.input-field name="referrence_number" type="text" label="Referrence Number" />
                             <x-admin.input-field name="account_name" type="text" label="Account Name" />

@@ -21,7 +21,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script src="{{ asset('assets/admin/js/main.js') }}"></script>
+<script src="{{ asset('assets/main.js') }}"></script>
+@stack('scripts')
+
 <!--begin::OverlayScrollbars Configure-->
 <script>
     const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
@@ -44,7 +46,6 @@
       });
 </script>
 
-@stack('scripts')
 <!--end::OverlayScrollbars Configure-->
 <!--end::Script-->
 </body>

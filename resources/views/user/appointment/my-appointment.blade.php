@@ -44,10 +44,11 @@
                                 <span class="badge text-bg-danger rounded-pill">Cancelled</span>
                             @endif
                         </div>
-                        @if ($appointment->status !== 'cancelled')
+                        @if ($appointment->status === 'pending')
                             <button class="btn btn-danger btn-sm"
                                 onclick="openModal({{ $appointment->id }})">Cancel</button>
-                        @else
+                        @endif
+                        @if($appointment->status === 'cancelled')
                             <div class="w-25 " >
                                 <div class="d-flex flex-column">
                                     <span class="fw-bold text-end">Reason</span>

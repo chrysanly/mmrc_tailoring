@@ -6,7 +6,7 @@ use App\Models\UniformPriceItem;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 
-trait paymentTrait
+trait PaymentTrait
 {
   private $subtotal = 0;
   private $topPrice = 0;

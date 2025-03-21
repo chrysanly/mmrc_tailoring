@@ -79,7 +79,7 @@
                             <x-slot name="icon"><i class="nav-icon bi bi-calendar-check"></i></x-slot>
                         </x-admin.list-link>
                         <x-admin.list-link link="{{ route('admin.order.index', [
-                        'status' => 'pending']) }}" active="{{ request()->routeIs('admin.order.index') }}">
+                        'status' => 'all']) }}" active="{{ request()->routeIs('admin.order.index') }}">
                             <x-slot name="title">Orders</x-slot>
                             <x-slot name="icon"><i class="nav-icon bi bi-bag-check"></i></x-slot>
                         </x-admin.list-link>

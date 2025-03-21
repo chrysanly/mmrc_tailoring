@@ -11,7 +11,7 @@
                 <form class="p-4 p-md-5 border rounded-5 bg-body-tertiary" method="POST"
                     action="{{ route('register.store') }}">
                     @csrf
-                    <h1 class="fs-1 fw-bold mb-4 title">GRRMC Tailoring</h1>
+                    <h1 class="fs-1 fw-bold mb-4 title">MMRC Tailoring</h1>
                     <div class="form-floating mb-3">
                         <input type="text" name="first_name" class="form-control" id="floatingInput"
                             placeholder="John Doe">
