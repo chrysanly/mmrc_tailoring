@@ -79,9 +79,14 @@
                                             <div class="badge rounded-pill text-bg-secondary">
                                                 {{ $order->payment_status }}
                                             </div><br>
+                                            @if ($order->payments->isEmpty() || $order->payments->last()->type === 'full')
+                                               Payment needs to be verified before processing the order. Please wait for the order to be completed. 
+                                            @else
                                             <a href="{{ route('user.order.payment', ['form_type' => $order->path ? 'true' : 'false', 'order' => $order]) }}"
                                                 class="btn btn-primary mt-4">Continue Payment
                                             </a>
+                                            @endif
+                                            
                                         @elseif (Str::lower($order->payment_status) === 'down payment')
                                             <span class="badge rounded-pill text-bg-secondary">Down Payment</span>
                                         @elseif (Str::lower($order->payment_status) === 'payment settled')

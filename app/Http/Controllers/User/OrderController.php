@@ -218,21 +218,21 @@ class OrderController extends Controller
         $validatedData['order_id'] = $order->id;
         $file = $request->file('file'); // Get the file
 
-        $downPayment = $order->invoice->total / 2;
-        $settlementPayment = $order->invoice->total - $order->invoice->total_payment;
-
         $amount = 0;
-        if ($request->type == 'down') {
+        if ($request->type === 'down') {
             $amount = $order->invoice->total / 2;
+        }
+
+        if ($request->type === 'balance') {
+            $amount = $order->invoice->total - $order->invoice->total_payment;
+        }
+        
+        if ($request->type === 'full') {
+            $amount = $order->invoice->total;
         }
 
         if ($order->status === 'in-progress') {
             alert()->error('Payment Failed', 'Your order is still in progress. Please wait for an email from the admin when it’s ready so you can settle the remaining balance.');
-            return redirect()->back()->withInput();
-        }
-
-        if ((int) $settlementPayment !== (int) $amount && $order->payment_status === 'Settlement Payment') {
-            alert()->error('Payment Failed', 'The amount must be equal to the required balance payment.');
             return redirect()->back()->withInput();
         }
        

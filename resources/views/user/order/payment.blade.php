@@ -112,34 +112,36 @@
                                         <h6><b>Tela:</b> {{ $order->additionalItems->tela ?? 0 }}</h6>
                                     </div>
                                 @else
-                                 <div class="d-flex justify-content-evenly gap-3">
-                                    <div class="text-start">
-                                        <h6><b>Order Type:</b> {{ $order->order_type }}</h6>
-                                        <h6><b>School:</b> {{ $order->school }}</h6>
-                                        <h6><b>Top:</b> {{ $order->top }}</h6>
-                                        @isset($order->bottom)
-                                            <h6><b>Bottom:</b> {{ $order->bottom }}</h6>
-                                        @endisset
-                                        <h6><b>Set:</b> {{ $order->set }}</h6>
-                                        <h5 class="text-primary mt-4">Additional Items</h5>
-                                        <h6><b>Threads:</b> {{ $order->additionalItems->threads ?? 0 }}</h6>
-                                        <h6><b>Zipper:</b> {{ $order->additionalItems->zipper ?? 0 }}</h6>
-                                        <h6><b>School Seal:</b> {{ $order->additionalItems->school_seal ?? 0 }}</h6>
-                                        <h6><b>Buttons:</b> {{ $order->additionalItems->buttons ?? 0 }}</h6>
-                                        <h6><b>Hook and Eye:</b> {{ $order->additionalItems->hook_and_eye ?? 0 }}</h6>
-                                        <h6><b>Tela:</b> {{ $order->additionalItems->tela ?? 0 }}</h6>
-                                    </div>
-                                    <div class="text-center">
-                                        <div class="d-flex flex-column">
-                                            @foreach ($order->file_url as $file)
-                                                <a href="{{ $file }}" target="_blank">
-                                                    <img src="{{ $file }}" alt="Order Image"
-                                                        class="img-thumbnail" width="150" height="150">
-                                                </a>
-                                            @endforeach
+                                    <div class="d-flex justify-content-evenly gap-3">
+                                        <div class="text-start">
+                                            <h6><b>Order Type:</b> {{ $order->order_type }}</h6>
+                                            <h6><b>School:</b> {{ $order->school }}</h6>
+                                            <h6><b>Top:</b> {{ $order->top }}</h6>
+                                            @isset($order->bottom)
+                                                <h6><b>Bottom:</b> {{ $order->bottom }}</h6>
+                                            @endisset
+                                            <h6><b>Set:</b> {{ $order->set }}</h6>
+                                            <h5 class="text-primary mt-4">Additional Items</h5>
+                                            <h6><b>Threads:</b> {{ $order->additionalItems->threads ?? 0 }}</h6>
+                                            <h6><b>Zipper:</b> {{ $order->additionalItems->zipper ?? 0 }}</h6>
+                                            <h6><b>School Seal:</b> {{ $order->additionalItems->school_seal ?? 0 }}
+                                            </h6>
+                                            <h6><b>Buttons:</b> {{ $order->additionalItems->buttons ?? 0 }}</h6>
+                                            <h6><b>Hook and Eye:</b> {{ $order->additionalItems->hook_and_eye ?? 0 }}
+                                            </h6>
+                                            <h6><b>Tela:</b> {{ $order->additionalItems->tela ?? 0 }}</h6>
+                                        </div>
+                                        <div class="text-center">
+                                            <div class="d-flex flex-column">
+                                                @foreach ($order->file_url as $file)
+                                                    <a href="{{ $file }}" target="_blank">
+                                                        <img src="{{ $file }}" alt="Order Image"
+                                                            class="img-thumbnail" width="150" height="150">
+                                                    </a>
+                                                @endforeach
+                                            </div>
                                         </div>
                                     </div>
-                                 </div>
                                 @endif
                             </div>
 
@@ -156,9 +158,9 @@
                                         ₱{{ number_format($order->invoice->additional_price ?? 0, 2) }}</span>
                                     @if ($order->invoice->discount)
                                         <span><b>Discount</b>:
-                                        {{ number_format($order->invoice->discount ?? 0, 2) }}%</span>
+                                            {{ number_format($order->invoice->discount ?? 0, 2) }}%</span>
                                     @endif
-                                    
+
                                     <span><b>Sub Total</b>:
                                         ₱{{ number_format($order->invoice->total ?? 0, 2) }}</span>
                                     <span><b>Total Paid</b>:
@@ -209,23 +211,42 @@
                 <div class="card col-4">
                     <div class="card-header">Payment Form</div>
                     <div class="card-body">
+                        @if ($order->payments->isEmpty() || $order->payments->last()?->type !== 'balance' && $order->payments->last()?->type !== 'full')
+                            <form action="{{ route('user.order.store-payment', $order) }}" method="post"
+                                enctype="multipart/form-data">
+                                @csrf
+                                <x-user.select name="type" title="Amount to Pay" :col="12">
 
-                        <form action="{{ route('user.order.store-payment', $order) }}" method="post"
-                            enctype="multipart/form-data">
-                            @csrf
-                            <x-user.select name="type" title="Amount to Pay" :col="12" >
-                                <option value="down" {{ old('type')  == 'down' ? 'selected' : '' }}>Down Payment</option>
-                                <option value="full" {{ old('type') == 'full' ? 'selected' : '' }}>Full Payment</option>
-                            </x-user.select>
-                            <x-admin.input-field name="contact_number" type="text" label="Contact Number" />
-                            <x-admin.input-field name="referrence_number" type="text" label="Referrence Number" />
-                            <x-admin.input-field name="account_name" type="text" label="Account Name" />
+                                    @if ($order->payments->isEmpty() || $order->payments->last()->type !== 'down')
+                                        <option value="down" {{ old('type') == 'down' ? 'selected' : '' }}>Down
+                                            Payment</option>
+                                        <option value="full" {{ old('type') == 'full' ? 'selected' : '' }}>Full
+                                            Payment</option>
+                                    @else
+                                        <option value="balance" {{ old('type') == 'balance' ? 'selected' : '' }}>
+                                            Balance Payment</option>
+                                    @endif
+                                </x-user.select>
+                                <x-admin.input-field name="contact_number" type="text" label="Contact Number" />
+                                <x-admin.input-field name="referrence_number" type="text"
+                                    label="Referrence Number" />
+                                <x-admin.input-field name="account_name" type="text" label="Account Name" />
 
-                            <small class="text-secondary">Please upload your receipt to verify your payment.</small>
-                            <x-admin.input-field name="file" type="file" label="Upload Receipt" />
+                                <small class="text-secondary">Please upload your receipt to verify your payment.</small>
+                                <x-admin.input-field name="file" type="file" label="Upload Receipt" />
 
-                            <button type="submit" class="w-100 btn btn-primary">Send Payment</button>
-                        </form>
+                                <button type="submit" class="w-100 btn btn-primary">Send Payment</button>
+                            </form>
+                        @else
+                            @if ($order->status === 'completed')
+                                Your order has been completed.
+                            @elseif ($order->payments->isEmpty() || $order->status === 'pending' && $order->payments->last()->type === 'full')
+                            payment needs to be verified before processing the order. Please wait for the order to be completed.
+                            @else
+                                Your balance payment is being verified. Please wait for the admin to process it.
+                            @endif
+                        @endif
+
                     </div>
                 </div>
             @endif
