@@ -193,20 +193,26 @@
         function fetchPaymentDetails(id) {
             ajaxGetRequest(`order/api/view/${id}`)
                 .then(response => {
+                    
                     const data = response.data;
                     const invoice = data.invoice;
                     const payments = data.payments;
+                    console.log(!invoice.is_paid );
+                    console.log(data.status === 'pending');
+                    
                     discount = invoice.discount;
                     paymentInvoice.innerHTML = `
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="card-title">Invoice</div>
-                            ${! invoice.is_paid ? `
-                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="addDiscount('${invoice.id}')">${invoice.discount === null ? 'Add' : 'Update'} Discount (%)</button>
-                            ` : `
-                            <span class="badge text-bg-success">Paid</span>
-                            `}
+                          ${!invoice.is_paid && data.status === 'pending' ? `
+    <button type="button" class="btn btn-outline-primary btn-sm" onclick="addDiscount('${invoice.id}')">
+        ${invoice.discount === null ? 'Add' : 'Update'} Discount (%)
+    </button>
+` : `
+    <span class="badge text-bg-success">Paid</span>
+`}
                                     
                             </div>
                         </div> 
@@ -283,7 +289,8 @@
                                 </div>
                                 <div class="d-flex flex-column">
                                     <b>Type:</b> 
-                                    ${payment.type === 'down' ? 'Down Payment' : 'Full Payment'}
+                                    ${payment.type === 'downpayment' ? 'Down Payment' :  payment.type === 'balance' ? 'Balance Payment' : 'Full Payment'}
+                                   
                                 </div>
                                 <a href="${payment.file_url}" target="_blank">
                                      ${payment.file_url ? `<img src="${payment.file_url}" alt="Payment Image" width="100">` : ''}
@@ -579,7 +586,7 @@
                                     <tr>
                                         <th>User</th>
                                         <th>Order Type</th>
-                                        <th>Payment Type</th>
+                                        <th>Payment Status</th>
                                         <th>Top</th>
                                         <th>Bottom</th>
                                         <th>Status</th>
@@ -611,13 +618,18 @@
                                                         data-bs-toggle="dropdown" aria-expanded="false">
                                                     </button>
                                                     <ul class="dropdown-menu">
-                                                        @if (Str::lower($order->payment_status) === 'down payment' && $order->status !== 'in-progress')
+                                                        @if (Str::lower($order->payment_status) === 'down payment' && $order->status === 'pending' || Str::lower($order->payment_status) === 'payment settled' && $order->status === 'pending')
                                                             <x-admin.order-update-status :id="$order->id"
                                                                 icon="bi-arrow-right-circle" status="in-progress"
                                                                 button="Move to In Progress" />
                                                         @endif
 
-                                                        @if ($order->status === 'in-progress')
+                                                        @if ($order->status === 'in-progress' && Str::lower($order->payment_status) === 'payment settled')
+                                                            <x-admin.order-update-status :id="$order->id"
+                                                                icon="bi-arrow-right-circle" status="done"
+                                                                button="Move to Done" />
+                                                        @endif
+                                                        @if ($order->status === 'in-progress' && Str::lower($order->payment_status) === 'down payment')
                                                             <x-admin.order-update-status :id="$order->id"
                                                                 icon="bi-arrow-right-circle" status="done"
                                                                 button="Move to Done" />

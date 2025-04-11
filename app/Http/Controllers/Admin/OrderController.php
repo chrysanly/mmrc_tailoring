@@ -52,20 +52,25 @@ class OrderController extends Controller
             }
         }
 
+
+
         $orderPayment->update([
             'is_verified' => true,
         ]);
 
-        if ($orderPayment->order->status === 'done') {
+        if ($orderPayment->type === 'fullpayment' || $orderPayment->type === 'balance') {
             $orderPayment->order()->update([
                 'payment_status' => 'payment-settled',
             ]);
         }
-        if ($orderPayment->order->status === 'pending') {
+
+        if ($orderPayment->type === 'downpayment') {
             $orderPayment->order()->update([
                 'payment_status' => 'down-payment',
             ]);
         }
+
+       
         $orderPayment->order->invoice()->update([
             'total_payment' => (float) $totalPayment,
             'is_paid' => Str::lower($orderPayment->order->payment_status) === 'payment settled' ? true : false,
@@ -84,7 +89,7 @@ class OrderController extends Controller
             Mail::to($order->user->email)->send(new SendUserOrderStatusInProgress($order));
         }
 
-        if ($request->status === 'done') {
+        if ($request->status === 'done' && $order->payment_status === 'settlement-payment') {
             Mail::to($order->user->email)->send(new SendUserOrderStatusDone($order));
             $order->update([
                 'payment_status' => 'settlement-payment',

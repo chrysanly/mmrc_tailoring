@@ -211,16 +211,16 @@
                 <div class="card col-4">
                     <div class="card-header">Payment Form</div>
                     <div class="card-body">
-                        @if ($order->payments->isEmpty() || $order->payments->last()?->type !== 'balance' && $order->payments->last()?->type !== 'full')
+                        @if ($order->payments->isEmpty() || $order->payments->last()?->type !== 'balance' && $order->payments->last()?->type !== 'fullpayment')
                             <form action="{{ route('user.order.store-payment', $order) }}" method="post"
                                 enctype="multipart/form-data">
                                 @csrf
                                 <x-user.select name="type" title="Amount to Pay" :col="12">
 
-                                    @if ($order->payments->isEmpty() || $order->payments->last()->type !== 'down')
-                                        <option value="down" {{ old('type') == 'down' ? 'selected' : '' }}>Down
+                                    @if ($order->payments->isEmpty() || $order->payments->last()->type !== 'downpayment')
+                                        <option value="downpayment" {{ old('type') == 'downpayment' ? 'selected' : '' }}>Down
                                             Payment</option>
-                                        <option value="full" {{ old('type') == 'full' ? 'selected' : '' }}>Full
+                                        <option value="fullpayment" {{ old('type') == 'fullpayment' ? 'selected' : '' }}>Full
                                             Payment</option>
                                     @else
                                         <option value="balance" {{ old('type') == 'balance' ? 'selected' : '' }}>

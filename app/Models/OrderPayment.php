@@ -28,4 +28,5 @@ class OrderPayment extends Model
 
         return !empty($files) ? Storage::url($files[0]) : null;
     }
+    
 }

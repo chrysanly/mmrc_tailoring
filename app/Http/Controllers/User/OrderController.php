@@ -214,12 +214,13 @@ class OrderController extends Controller
 
     public function storePayment(OrderPaymentRequest $request, Order $order)
     {
+        
         $validatedData = $request->safe()->except('file'); // Remove file safely
         $validatedData['order_id'] = $order->id;
         $file = $request->file('file'); // Get the file
 
         $amount = 0;
-        if ($request->type === 'down') {
+        if ($request->type === 'downpayment') {
             $amount = $order->invoice->total / 2;
         }
 
@@ -227,7 +228,7 @@ class OrderController extends Controller
             $amount = $order->invoice->total - $order->invoice->total_payment;
         }
         
-        if ($request->type === 'full') {
+        if ($request->type === 'fullpayment') {
             $amount = $order->invoice->total;
         }
 
