@@ -78,7 +78,8 @@
                                             <th width="5">#</th>
                                             <th>User Name</th>
                                             <th>User Email</th>
-                                            <th>Appointment Date</th>
+                                            <th>Date</th>
+                                            <th>Time</th>
                                             <th>Status</th>
                                             @if (request('status') === 'cancelled' || request('status') === 'all')
                                                 <th>Remarks</th>
@@ -93,6 +94,7 @@
                                                 <td>{{ $appointment->user->fullname }}</td>
                                                 <td>{{ $appointment->user->email }}</td>
                                                 <td>{{ $appointment->date }}</td>
+                                                <td>{{ $appointment->appointment_time }}</td>
 
                                                 <td class="text-center">
                                                     @if ($appointment->status === 'pending')

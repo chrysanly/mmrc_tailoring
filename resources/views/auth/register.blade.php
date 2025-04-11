@@ -21,18 +21,18 @@
                         @enderror
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" name="last_name" class="form-control" id="floatingInput"
-                            placeholder="John Doe">
-                        <label for="floatingInput">Last Name</label>
-                        @error('last_name')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-floating mb-3">
                         <input type="text" name="middle_name" class="form-control" id="floatingInput"
                             placeholder="John Doe">
                         <label for="floatingInput">Middle Name</label>
                         @error('middle_name')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" name="last_name" class="form-control" id="floatingInput"
+                            placeholder="John Doe">
+                        <label for="floatingInput">Last Name</label>
+                        @error('last_name')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>

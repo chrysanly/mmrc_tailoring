@@ -42,7 +42,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [SessionController::class, 'destroy'])->name('logout');
 
     Route::prefix('admin')->middleware('role.admin')->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+        Route::prefix('dashboard')->group(function (){
+            Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+            Route::get('/api/appointment-counts', [DashboardController::class, 'appointmentOrderCounts'])->name('admin.dashboard.appointment-order-counts');
+            Route::get('/api/sales-report', [DashboardController::class, 'salesReport'])->name('admin.dashboard.sales-report');
+        });
 
         Route::prefix('appointment')->group(function () {
             Route::get('/', [AdminAppointmentController::class, 'index'])->name('admin.appointment.index');

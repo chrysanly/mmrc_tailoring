@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Support\Str;
 use App\Models\UniformPrice;
-use App\Models\UniformPriceItem;
 use Illuminate\Http\Request;
+use App\Models\UniformPriceItem;
 use App\Http\Controllers\Controller;
 
 class UniformPriceController extends Controller
@@ -87,6 +88,7 @@ class UniformPriceController extends Controller
         $uniformPriceItem->uniform_price_id = $uniform->id;
         $uniformPriceItem->name = $request->name;
         $uniformPriceItem->price = $request->price;
+        $uniformPriceItem->value = Str::lower($request->name);
         $uniformPriceItem->save();
     }
 }

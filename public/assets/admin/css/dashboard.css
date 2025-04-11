@@ -1,0 +1,17 @@
+#appointmentPieChart,
+#orderPieChart {
+    width: 300px !important;
+    height: 300px !important;
+}
+
+.pieCountCard {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    /* Smooth transition */
+}
+
+.pieCountCard.loaded {
+    opacity: 1;
+    transform: translateY(0);
+}

@@ -2,6 +2,33 @@
 
 @section('title', 'Dashboard')
 
+@push('scripts')
+    <link href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+    <script src="{{ asset('assets/admin/js/dashboard/sale-report.js') }}"></script>
+    <script src="{{ asset('assets/admin/js/dashboard/pie-chart-data.js') }}"></script>
+@endpush
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('assets/admin/css/dashboard.css') }}">
+
+    <style>
+        @media (max-width: 780px) {
+            #weekNavigation {
+            position: relative;
+            margin-top: 120px;
+            width: 100%;
+            text-align: center;
+            }
+        }
+    </style>
+@endpush
+
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -10,147 +37,53 @@
                     <h3 class="card-title">Dashboard</h3>
                 </div>
                 <!-- /.card-header -->
-                <div class="card-body">
-                    <p>Welcome {{ auth()->user()->fullname }}.</p>
-                </div>
-
                 <div class="container-fluid">
-                    <h4 class="text-danger fw-bold">Appointment Counts</h4>
-                    <div class="row">
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-secondary">
-                                <div class="inner">
-                                    <h3>{{ $pendingAppointments }}</h3>
-
-                                    <p>Pending Appointments</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-bag"></i>
-                                </div>
-                                <a href="{{ route('admin.appointment.index', ['status' => 'pending']) }}"
-                                    class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div>
-                        <!-- ./col -->
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-info">
-                                <div class="inner">
-                                    <h3>{{ $inProgressAppointments }}</h3>
-
-                                    <p>In Progress Appointments</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-stats-bars"></i>
-                                </div>
-                                <a href="{{ route('admin.appointment.index', ['status' => 'in-progress']) }}"
-                                    class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div>
-                        <!-- ./col -->
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-primary">
-                                <div class="inner">
-                                    <h3>{{ $doneAppointments }}</h3>
-
-                                    <p>Done Appointments</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-person-add"></i>
-                                </div>
-                                <a href="{{ route('admin.appointment.index', ['status' => 'done']) }}"
-                                    class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div>
-                        <!-- ./col -->
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-success">
-                                <div class="inner">
-                                    <h3>{{ $completedAppointments }}</h3>
-
-                                    <p>Completed Appointments</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-pie-graph"></i>
-                                </div>
-                                <a href="{{ route('admin.appointment.index', ['status' => 'completed']) }}"
-                                    class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div>
-                        <!-- ./col -->
+                    {{-- Pie Chart --}}
+                    <div class="d-md-flex d-sm-inline justify-content-around align-items-center p-2">
+                        <x-admin.pie-chart-count title="Appointment Counts" pieChartId="appointmentPieChart" />
+                        <x-admin.pie-chart-count title="Order Counts" pieChartId="orderPieChart" />
                     </div>
 
-                    {{-- Order Counts --}}
-                    <h4 class="text-danger fw-bold">Order Counts</h4>
-                    <div class="row mb-4">
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-secondary">
-                                <div class="inner">
-                                    <h3>{{ $pendingOrders }}</h3>
+                    {{-- Sale Report --}}
+                    <div class="card mb-4 p-2">
+                        <div class="row mb-5">
+                            <div class="col-md-4">
+                                <label for="year" class="form-label">Select Year</label>
+                                <select id="year" class="form-select" onchange="updateYearRange()">
+                                    @foreach ($years as $year)
+                                        <option value="{{ $year }}">{{ $year }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="year" class="form-label">Select Range</label>
+                                <!-- Range Selection Dropdown -->
+                                <select id="rangeType" class="form-select" onchange="updateChartRange()">
+                                    <option value="weekly" selected>Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="today">Today</option>
+                                </select>
+                            </div>
 
-                                    <p>Pending Orders</p>
+                            <div class="col-md-4">
+                                <!-- Week Navigation Buttons -->
+                                <div id="weekNavigation" class="col-sm-4" style="position: absolute; top: 40px;">
+                                        <button id="prevRangeBtn" class="btn btn-secondary"> &lt; </button>
+                                        <span id="rangeText" class="fw-bold">April 6 - April 12</span>
+                                        <button id="nextRangeBtn" class="btn btn-secondary"> &gt; </button>
                                 </div>
-                                <div class="icon">
-                                    <i class="ion ion-bag"></i>
+
+                                <!-- Date Range Picker -->
+                                <div id="dateRangeContainer" style="display: none;">
+                                    <label for="dateRangePicker" class="form-label">Select Date Range</label>
+                                    <input type="text" id="dateRangePicker" class="form-control" />
                                 </div>
-                                <a href="{{ route('admin.appointment.index', ['status' => 'pending']) }}"
-                                    class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
-                        <!-- ./col -->
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-info">
-                                <div class="inner">
-                                    <h3>{{ $inProgressOrders }}</h3>
 
-                                    <p>In Progress Orders</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-stats-bars"></i>
-                                </div>
-                                <a href="{{ route('admin.appointment.index', ['status' => 'in-progress']) }}"
-                                    class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div>
-                        <!-- ./col -->
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-primary">
-                                <div class="inner">
-                                    <h3>{{ $doneOrders }}</h3>
-
-                                    <p>Done Orders</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-person-add"></i>
-                                </div>
-                                <a href="{{ route('admin.appointment.index', ['status' => 'done']) }}"
-                                    class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div>
-                        <!-- ./col -->
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-success">
-                                <div class="inner">
-                                    <h3>{{ $completedOrders }}</h3>
-
-                                    <p>Completed Orders</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-pie-graph"></i>
-                                </div>
-                                <a href="{{ route('admin.appointment.index', ['status' => 'completed']) }}"
-                                    class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div>
-                        <!-- ./col -->
+                        <canvas id="lineChart" width="400" height="100"></canvas>
                     </div>
+                    {{-- Sale Report --}}
 
                     {{-- Latest Appointments --}}
                     <div class="card mb-4">
@@ -159,8 +92,10 @@
 
                             <div class="card-tools">
                                 <a href="{{ route('admin.appointment.index', [
-                        'status' => 'pending']) }}" class="btn btn-tool" data-card-widget="collapse">
-                                   View more
+                                    'status' => 'pending',
+                                ]) }}"
+                                    class="btn btn-tool" data-card-widget="collapse">
+                                    View more
                                 </a>
 
                             </div>
@@ -180,7 +115,7 @@
                                     <tbody>
                                         @forelse ($appointments as $appointment)
                                             <tr>
-                                               <td>{{ $appointment->user->fullname }}</td>
+                                                <td>{{ $appointment->user->fullname }}</td>
                                                 <td>{{ $appointment->user->email }}</td>
                                                 <td>{{ $appointment->date }}</td>
                                                 <td>
@@ -200,7 +135,7 @@
                                                     @endif
                                                 </td>
                                             </tr>
-                                            @empty
+                                        @empty
                                             <tr>
                                                 <td>No Data</td>
                                             </tr>
@@ -221,8 +156,10 @@
 
                             <div class="card-tools">
                                 <a href="{{ route('admin.order.index', [
-                        'status' => 'pending']) }}" class="btn btn-tool" data-card-widget="collapse">
-                                   View more
+                                    'status' => 'pending',
+                                ]) }}"
+                                    class="btn btn-tool" data-card-widget="collapse">
+                                    View more
                                 </a>
 
                             </div>

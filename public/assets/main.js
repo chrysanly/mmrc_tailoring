@@ -197,3 +197,7 @@ function ajaxDeleteRequest(url) {
         });
     });
 }
+
+const consoleLog = (title, data) => {
+    console.log(`${title} : ` + data);
+}
