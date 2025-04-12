@@ -15,7 +15,9 @@ class DashboardController extends Controller
 {
     public function __construct(public DashboardSalesReport $dashboardSalesReport){}
     public function index(): View
-    {
+    { 
+        
+        
         $startYear = 2024;
         $currentYear = date('Y');
 
@@ -63,5 +65,24 @@ class DashboardController extends Controller
     public function salesReport(Request $request)
     {
         return $this->dashboardSalesReport->salesReport($request);
+    }
+
+    public function orderPaymentCounts(Request $request)
+    {
+
+        $allStatuses = ['Payment Settled', 'Down Payment'];
+
+        $orderCounts = Order::select('payment_status', DB::raw('count(*) as total'))
+            ->groupBy('payment_status')
+            ->get()
+            ->pluck('total', 'payment_status');
+
+
+        $orderCount = collect($allStatuses)->mapWithKeys(function ($status) use ($orderCounts) {
+            return [$status => $orderCounts->get($status, 0)];
+        });
+        
+
+        return response()->json(compact( 'orderCount'));
     }
 }

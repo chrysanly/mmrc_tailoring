@@ -45,6 +45,7 @@ Route::middleware('auth')->group(function () {
         Route::prefix('dashboard')->group(function (){
             Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
             Route::get('/api/appointment-counts', [DashboardController::class, 'appointmentOrderCounts'])->name('admin.dashboard.appointment-order-counts');
+            Route::get('/api/order-payment-counts', [DashboardController::class, 'orderPaymentCounts'])->name('admin.dashboard.order-payment-counts');
             Route::get('/api/sales-report', [DashboardController::class, 'salesReport'])->name('admin.dashboard.sales-report');
         });
 

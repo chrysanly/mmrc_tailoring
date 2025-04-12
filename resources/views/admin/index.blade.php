@@ -39,9 +39,10 @@
                 <!-- /.card-header -->
                 <div class="container-fluid">
                     {{-- Pie Chart --}}
-                    <div class="d-md-flex d-sm-inline justify-content-around align-items-center p-2">
-                        <x-admin.pie-chart-count title="Appointment Counts" pieChartId="appointmentPieChart" />
-                        <x-admin.pie-chart-count title="Order Counts" pieChartId="orderPieChart" />
+                    <div class="d-md-flex d-sm-inline justify-content-between align-items-center p-2 gap-2">
+                        <x-admin.pie-chart-count title="Appointment Counts" pieChartId="appointmentPieChart" col="col-md-4"/>
+                        <x-admin.pie-chart-count title="Order Status Counts" pieChartId="orderStatusPieChart" col="col-md-4"/>
+                        <x-admin.pie-chart-count title="Order Counts" pieChartId="orderPieChart" col="col-md-4"/>
                     </div>
 
                     {{-- Sale Report --}}
@@ -68,9 +69,9 @@
                             <div class="col-md-4">
                                 <!-- Week Navigation Buttons -->
                                 <div id="weekNavigation" class="col-sm-4" style="position: absolute; top: 40px;">
-                                        <button id="prevRangeBtn" class="btn btn-secondary"> &lt; </button>
+                                        <button id="prevRangeBtn" class="btn btn-secondary btn-sm"> &lt; </button>
                                         <span id="rangeText" class="fw-bold">April 6 - April 12</span>
-                                        <button id="nextRangeBtn" class="btn btn-secondary"> &gt; </button>
+                                        <button id="nextRangeBtn" class="btn btn-secondary btn-sm"> &gt; </button>
                                 </div>
 
                                 <!-- Date Range Picker -->

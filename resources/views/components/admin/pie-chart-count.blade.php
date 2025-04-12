@@ -1,6 +1,6 @@
-@props(['title' => '', 'pieChartId' => ''])
+@props(['title' => '', 'pieChartId' => '', 'col' => ''])
 
-<div class="card col-md-5 col-sm-12 mb-4 d-flex justify-content-center align-items-center p-2 pieCountCard">
+<div class="card {{ $col }} col-sm-12 mb-4 d-flex justify-content-center align-items-center p-2 pieCountCard">
     <h4 class="text-danger fw-bold">{{ $title }}</h4>
     <div class="loading" style="display: none; text-align: center;">
         <div class="spinner-grow text-primary spinner-grow-sm" role="status">

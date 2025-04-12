@@ -1,5 +1,6 @@
 #appointmentPieChart,
-#orderPieChart {
+#orderPieChart,
+#orderStatusPieChart {
     width: 300px !important;
     height: 300px !important;
 }
