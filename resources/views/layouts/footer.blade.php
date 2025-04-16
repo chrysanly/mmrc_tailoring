@@ -1,5 +1,5 @@
 <footer id="footer">
-    <div class="container px-4 py-5">
+    <div class="container px-4 py-5 ">
 
         <div class="d-flex justify-content-around align-items-center">
             <div>

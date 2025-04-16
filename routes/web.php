@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentControll
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\Settings\AppointmentLimitController;
 use App\Http\Controllers\Admin\Settings\PaymentController;
+use App\Http\Controllers\Admin\Settings\PercentageController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\UniformPriceController;
 use App\Http\Controllers\Admin\UserController;
@@ -105,6 +106,11 @@ Route::middleware('auth')->group(function () {
                     Route::delete('/destroy/{paymentOptions}', [PaymentController::class, 'destroy'])->name('admin.settings.payment-option.destroy');
                 });
             });
+            Route::prefix('percentage')->group(function () {
+                Route::get('/', [PercentageController::class, 'index'])->name('admin.settings.percentage.index');
+                Route::post('/', [PercentageController::class, 'store'])->name('admin.settings.percentage.store');
+                // Route::post('/', [AppointmentLimitController::class, 'store'])->name('admin.settings.appointment-limit.store');
+            });
         });
     });
 
@@ -126,6 +132,14 @@ Route::middleware('auth')->group(function () {
             Route::post('/store', [OrderController::class, 'store'])->name('user.order.store');
             Route::post('/store/ready-made', [OrderController::class, 'storeReadyMade'])->name('user.order.store.ready-made');
             Route::post('/store/payment/{order}', [OrderController::class, 'storePayment'])->name('user.order.store-payment');
+            Route::prefix('api')->group(function () {
+                Route::get('/view/{order}', [OrderController::class, 'viewOrder'])->name('user.order.view');
+                Route::get('/update-status/{order}', [OrderController::class, 'markAsComplete'])->name('user.order.mark-as-complete');
+                // Route::post('/payment/verified/{orderPayment}', [AdminOrderController::class, 'paymentVerified'])->name('admin.order.payment.verified');
+                // Route::patch('/invoice/discount/{orderInvoice}', [AdminOrderController::class, 'discount'])->name('admin.order.discount');
+            });
         });
+
+        
     });
 });

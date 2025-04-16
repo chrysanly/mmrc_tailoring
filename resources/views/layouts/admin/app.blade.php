@@ -79,7 +79,7 @@
                             <x-slot name="icon"><i class="nav-icon bi bi-calendar-check"></i></x-slot>
                         </x-admin.list-link>
                         <x-admin.list-link link="{{ route('admin.order.index', [
-                        'status' => 'all']) }}" active="{{ request()->routeIs('admin.order.index') }}">
+                        'status' => 'all']) }}" active="{{ request()->routeIs('admin.order.index') }}" :hasCount="true" :count="orderPendingCount()">
                             <x-slot name="title">Orders</x-slot>
                             <x-slot name="icon"><i class="nav-icon bi bi-bag-check"></i></x-slot>
                         </x-admin.list-link>
@@ -101,6 +101,10 @@
                             </x-admin.list-link>
                             <x-admin.list-link link="{{ route('admin.settings.payment-option') }}" active="{{ request()->routeIs('admin.settings.payment-option') }}">
                                 <x-slot name="title">Payment Options</x-slot>
+                                <x-slot name="icon"><i class="nav-icon bi bi-credit-card"></i></x-slot>
+                            </x-admin.list-link>
+                            <x-admin.list-link link="{{ route('admin.settings.percentage.index') }}" active="{{ request()->routeIs('admin.settings.percentage.index') }}">
+                                <x-slot name="title">DP Percentage</x-slot>
                                 <x-slot name="icon"><i class="nav-icon bi bi-credit-card"></i></x-slot>
                             </x-admin.list-link>
                         </x-admin.dropdown-list>

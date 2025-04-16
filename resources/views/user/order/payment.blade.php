@@ -86,9 +86,13 @@
             <div class="card col-8">
                 <div class="card-header">Payment Description</div>
                 <div class="card-body">
-                    <div class="alert alert-warning"><b>Note</b>: 50% down payment is strictly required to process
-                        your
-                        order.</div>
+                    @if ($order->status === 'pending')
+                        <div class="alert alert-warning"><b>Note</b>: {{ $downpayment }}% down payment is strictly
+                            required to process
+                            your
+                            order.
+                        </div>
+                    @endif
 
                     <div class="order-description my-4 p-3 border rounded">
                         <div class="d-flex justify-content-between align-items-start">
@@ -174,7 +178,8 @@
                                     <div class="align-self-center">
                                         @if (Str::lower($order->payment_status) === 'unpaid')
                                             <div class="text-warning"><b>Down Payment</b>:
-                                                ₱{{ number_format($order->invoice->total / 2 ?? 0, 2) }}</div>
+                                                ₱{{ number_format($order->invoice->total * ($downpayment / 100) ?? 0, 2) }}
+                                            </div>
                                         @endif
                                         @if (Str::lower($order->payment_status) === 'down payment')
                                             <div class="text-warning"><b>Balance</b>:
@@ -211,16 +216,20 @@
                 <div class="card col-4">
                     <div class="card-header">Payment Form</div>
                     <div class="card-body">
-                        @if ($order->payments->isEmpty() || $order->payments->last()?->type !== 'balance' && $order->payments->last()?->type !== 'fullpayment')
+                        @if (
+                            $order->payments->isEmpty() ||
+                                ($order->payments->last()?->type !== 'balance' && $order->payments->last()?->type !== 'fullpayment'))
                             <form action="{{ route('user.order.store-payment', $order) }}" method="post"
                                 enctype="multipart/form-data">
                                 @csrf
                                 <x-user.select name="type" title="Amount to Pay" :col="12">
 
                                     @if ($order->payments->isEmpty() || $order->payments->last()->type !== 'downpayment')
-                                        <option value="downpayment" {{ old('type') == 'downpayment' ? 'selected' : '' }}>Down
+                                        <option value="downpayment"
+                                            {{ old('type') == 'downpayment' ? 'selected' : '' }}>Down
                                             Payment</option>
-                                        <option value="fullpayment" {{ old('type') == 'fullpayment' ? 'selected' : '' }}>Full
+                                        <option value="fullpayment"
+                                            {{ old('type') == 'fullpayment' ? 'selected' : '' }}>Full
                                             Payment</option>
                                     @else
                                         <option value="balance" {{ old('type') == 'balance' ? 'selected' : '' }}>
@@ -240,8 +249,9 @@
                         @else
                             @if ($order->status === 'completed')
                                 Your order has been completed.
-                            @elseif ($order->payments->isEmpty() || $order->status === 'pending' && $order->payments->last()->type === 'full')
-                            payment needs to be verified before processing the order. Please wait for the order to be completed.
+                            @elseif ($order->payments->isEmpty() || ($order->status === 'pending' && $order->payments->last()->type === 'full'))
+                                payment needs to be verified before processing the order. Please wait for the order to
+                                be completed.
                             @else
                                 Your balance payment is being verified. Please wait for the admin to process it.
                             @endif

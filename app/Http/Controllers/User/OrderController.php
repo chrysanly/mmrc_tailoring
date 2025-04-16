@@ -26,6 +26,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Requests\OrderPaymentRequest;
 use App\Http\Requests\OrderReadyMadeRequest;
+use App\Models\Settings;
 
 class OrderController extends Controller
 {
@@ -46,7 +47,7 @@ class OrderController extends Controller
     public function orders()
     {
         return view('user.order.my-orders.index', [
-            'orders' => auth()->user()->orders()->latest('created_at')->paginate(2),
+            'orders' => auth()->user()->orders()->latest('created_at')->paginate(10),
         ]);
     }
 
@@ -209,6 +210,7 @@ class OrderController extends Controller
             'order' => $order,
             'formType' => $form_type,
             'paymentOptions' => PaymentOptions::all(),
+            'downpayment' => Settings::first()->downpayment,
         ]);
     }
 
@@ -218,10 +220,10 @@ class OrderController extends Controller
         $validatedData = $request->safe()->except('file'); // Remove file safely
         $validatedData['order_id'] = $order->id;
         $file = $request->file('file'); // Get the file
-
+        $downpayment = Settings::first()->downpayment;
         $amount = 0;
         if ($request->type === 'downpayment') {
-            $amount = $order->invoice->total / 2;
+            $amount = $order->invoice->total * ($downpayment / 100);
         }
 
         if ($request->type === 'balance') {
@@ -261,5 +263,21 @@ class OrderController extends Controller
         }
 
         return view('user.order.success');
+    }
+
+    public function viewOrder(Order $order)
+    {
+        return response()->json(['data' => $order->load('topMeasurement.measurable', 'bottomMeasurement.measurable', 'invoice', 'payments', 'additionalItems')]);
+    }
+
+    public function markAsComplete(Order $order)
+    {
+        $order->update([
+            'status' => 'completed',
+        ]);
+
+        toast('Order marked as completed, Thank you!', 'success');
+
+        return redirect()->back();
     }
 }

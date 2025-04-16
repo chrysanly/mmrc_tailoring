@@ -635,7 +635,7 @@
                                                                 button="Move to Done" />
                                                         @endif
 
-                                                        @if ($order->status === 'done' && Str::lower($order->payment_status) === 'payment settled' && $order->payments->isEmpty() && $order->payments->last()->type === 'full')
+                                                        @if ($order->status === 'done' && Str::lower($order->payment_status) === 'payment settled' && ! $order->payments->isEmpty() && $order->payments->last()->type === 'full')
                                                             <x-admin.order-update-status :id="$order->id"
                                                                 icon="bi-arrow-right-circle" status="completed"
                                                                 button="Move to Complete" />
