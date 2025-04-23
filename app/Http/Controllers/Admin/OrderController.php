@@ -89,11 +89,8 @@ class OrderController extends Controller
             Mail::to($order->user->email)->send(new SendUserOrderStatusInProgress($order));
         }
 
-        if ($request->status === 'done' && $order->payment_status === 'settlement-payment') {
+        if ($request->status === 'done') {
             Mail::to($order->user->email)->send(new SendUserOrderStatusDone($order));
-            $order->update([
-                'payment_status' => 'settlement-payment',
-            ]);
         }
         if ($request->status === 'completed') {
             Mail::to($order->user->email)->send(new SendUserOrderStatusCompleted($order));
