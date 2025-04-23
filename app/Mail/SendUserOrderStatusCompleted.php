@@ -28,7 +28,7 @@ class SendUserOrderStatusCompleted extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Order Status Completed',
+            subject: 'Friendly Reminder: Update Your Order Status',
         );
     }
 

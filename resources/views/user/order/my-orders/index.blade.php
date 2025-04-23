@@ -12,6 +12,7 @@
             <table class="table table-bordered table-striped table-hover rounded shadow-sm rounded-3">
                 <thead class="table-light">
                     <tr>
+                        <th>#</th>
                         <th>Date</th>
                         <th>Order Type</th>
                         <th>Payment Type</th>
@@ -24,6 +25,7 @@
                 <tbody>
                     @forelse ($orders as $order)
                         <tr>
+                            <td>{{ $order->id }}</td>
                             <td>{{ $order->created_at->format('Y-m-d') }}</td>
                             <td>{{ $order->order_type }}</td>
                             <td>

@@ -79,24 +79,29 @@ class OrderController extends Controller
 
     public function updateStatus(Request $request, Order $order)
     {
-        $order->update([
-            'status' => $request->status,
-        ]);
+        
 
-        toast('Order updated to ' . ucwords(str_replace('-', ' ', $request->status)) . ' and the user has been notified via email.', 'success');
 
         if ($request->status === 'in-progress') {
+            toast('Order updated to ' . ucwords(str_replace('-', ' ', $request->status)) . ' and the user has been notified via email.', 'success');
             Mail::to($order->user->email)->send(new SendUserOrderStatusInProgress($order));
+            $order->update([
+                'status' => $request->status,
+            ]);
         }
 
         if ($request->status === 'done') {
+            toast('Order updated to ' . ucwords(str_replace('-', ' ', $request->status)) . ' and the user has been notified via email.', 'success');
             Mail::to($order->user->email)->send(new SendUserOrderStatusDone($order));
-        }
-        if ($request->status === 'completed') {
-            Mail::to($order->user->email)->send(new SendUserOrderStatusCompleted($order));
             $order->update([
-                'status' => 'completed',
+                'status' => $request->status,
             ]);
+        }
+
+        if ($request->status === 'completed') {
+            toast('The user has been successfully reminded via email.', 'success');
+            Mail::to($order->user->email)->send(new SendUserOrderStatusCompleted($order));
+            return redirect()->back();
         }
 
         return redirect()->route('admin.order.index', [

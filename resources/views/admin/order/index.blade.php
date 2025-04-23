@@ -692,10 +692,10 @@
                                                             $order->status === 'done' &&
                                                                 Str::lower($order->payment_status) === 'payment settled' &&
                                                                 !$order->payments->isEmpty() &&
-                                                                $order->payments->last()->type === 'full')
+                                                                $order->payments->last()->type === 'fullpayment')
                                                             <x-admin.order-update-status :id="$order->id"
-                                                                icon="bi-arrow-right-circle" status="completed"
-                                                                button="Move to Complete" />
+                                                                icon="bi-bell" status="completed"
+                                                                button="Send Reminder" />
                                                         @endif
 
                                                         <li>
