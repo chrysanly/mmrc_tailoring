@@ -56,6 +56,7 @@
         let invoiceId;
         let paymentId;
         let discount;
+
         function viewOrder(id) {
             $('#viewOrderModal').modal('show');
             fetchOrder(id);
@@ -74,10 +75,10 @@
             $('#paymentDetailsModal').modal('hide');
         }
 
-        $("#discountSaveButton").on('click', function (e){
+        $("#discountSaveButton").on('click', function(e) {
             e.preventDefault();
             console.log('clicked');
-            
+
             $("#discountSaveButton").addClass('disabled');
 
             const formData = new FormData();
@@ -85,27 +86,27 @@
             formData.append("_method", "PATCH");
 
             ajaxPostRequest('/admin/order/api/invoice/discount/' + invoiceId, formData)
-            .then(response => {
-                if (response.error) {
-                    swalMessage("", `${response.error}`, "success");
-                    return;
-                } else {
-                    swalMessage("", "Discount Added Successfully", "success");
-                    fetchPaymentDetails(paymentId);
-                    $('#addDiscountModal').modal('hide');
-                    $('#paymentDetailsModal').modal('show');
+                .then(response => {
+                    if (response.error) {
+                        swalMessage("", `${response.error}`, "success");
+                        return;
+                    } else {
+                        swalMessage("", "Discount Added Successfully", "success");
+                        fetchPaymentDetails(paymentId);
+                        $('#addDiscountModal').modal('hide');
+                        $('#paymentDetailsModal').modal('show');
+                        $("#discountSaveButton").removeClass('disabled');
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
                     $("#discountSaveButton").removeClass('disabled');
-                }
-            })
-            .catch(error => {
-                console.log(error);
-                $("#discountSaveButton").removeClass('disabled');
-                
-            })
+
+                })
         });
 
-        $("#discountBackButton").on('click', function () {
-             $('#addDiscountModal').modal('hide');
+        $("#discountBackButton").on('click', function() {
+            $('#addDiscountModal').modal('hide');
             $('#paymentDetailsModal').modal('show');
         });
 
@@ -193,26 +194,30 @@
         function fetchPaymentDetails(id) {
             ajaxGetRequest(`order/api/view/${id}`)
                 .then(response => {
-                    
+
                     const data = response.data;
                     const invoice = data.invoice;
                     const payments = data.payments;
-                    console.log(!invoice.is_paid );
+                    console.log(!invoice.is_paid);
                     console.log(data.status === 'pending');
-                    
+
                     discount = invoice.discount;
                     paymentInvoice.innerHTML = `
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="card-title">Invoice</div>
-                          ${!invoice.is_paid && data.status === 'pending' ? `
-    <button type="button" class="btn btn-outline-primary btn-sm" onclick="addDiscount('${invoice.id}')">
-        ${invoice.discount === null ? 'Add' : 'Update'} Discount (%)
-    </button>
-` : `
-    <span class="badge text-bg-success">Paid</span>
-`}
+                            <div>
+                                ${!invoice.is_paid && data.status === 'pending' ? `
+                                <button type="button" class="btn btn-outline-primary btn-sm print-hidden" onclick="addDiscount('${invoice.id}')">
+                                    ${invoice.discount === null ? 'Add' : 'Update'} Discount (%)
+                                </button>
+                            ` : `
+                                <span class="badge text-bg-success print-hidden">Paid</span>
+                            `}
+
+                            <button type="button" class="btn btn-sm btn-secondary print-hidden" onclick="printModalContent()">Print</button>
+                            </div>
                                     
                             </div>
                         </div> 
@@ -295,7 +300,7 @@
                                 <a href="${payment.file_url}" target="_blank">
                                      ${payment.file_url ? `<img src="${payment.file_url}" alt="Payment Image" width="100">` : ''}
                                     </a>
-                                ${payment.is_verified ? `<p class="badge text-bg-success">Payment Verified</p>` : `<button class="btn btn-sm btn-primary" onclick="paymentVerified('${payment.id}', '${id}')">Verified Payment</button>`}
+                                ${payment.is_verified ? `<p class="badge text-bg-success print-hidden">Payment Verified</p>` : `<button class="btn btn-sm btn-primary print-hidden" onclick="paymentVerified('${payment.id}', '${id}')">Verified Payment</button>`}
                             </div>
                         `;
                         })
@@ -518,6 +523,52 @@
             fileHtml += `</div>`;
             modalFiles.innerHTML = fileHtml;
         }
+
+
+        function printModalContent() {
+    const modalContent = document.querySelector('#paymentDetailsModal').innerHTML; // Replace '.modal-content' with your modal's class or ID
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Payment Details</title>
+            <!--begin::Fonts-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
+        integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" />
+    <!--end::Fonts-->
+
+    <!--begin::Third Party Plugin(OverlayScrollbars)-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css"
+        integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg=" crossorigin="anonymous" />
+    <!--end::Third Party Plugin(OverlayScrollbars)-->
+
+    <!--begin::Third Party Plugin(Bootstrap Icons)-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
+    <!--end::Third Party Plugin(Bootstrap Icons)-->
+
+    <!--begin::Required Plugin(AdminLTE)-->
+    <link rel="stylesheet" href="{{ asset('assets/css/adminlte.css') }}" />
+    <!--end::Required Plugin(AdminLTE)-->
+            <style>
+                @page {
+                    size: landscape;
+                    margin: 20mm;
+                }
+                img { display: none; }
+                .print-hidden {
+                    display: none;
+                }
+            </style>
+        </head>
+        <body>
+            ${modalContent}
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+}
     </script>
 @endpush
 
@@ -599,8 +650,8 @@
                                             <td>{{ $order->user->fullname }}</td>
                                             <td>{{ $order->order_type }}</td>
                                             <td>{{ $order->payment_status }}</td>
-                                            <td>{{ $order->top}}</td>
-                                            <td>{{ $order->bottom}}</td>
+                                            <td>{{ $order->top }}</td>
+                                            <td>{{ $order->bottom }}</td>
                                             <td class="text-center">
                                                 @if ($order->status === 'pending')
                                                     <span class="badge rounded-pill text-bg-secondary">Pending</span>
@@ -618,7 +669,9 @@
                                                         data-bs-toggle="dropdown" aria-expanded="false">
                                                     </button>
                                                     <ul class="dropdown-menu">
-                                                        @if (Str::lower($order->payment_status) === 'down payment' && $order->status === 'pending' || Str::lower($order->payment_status) === 'payment settled' && $order->status === 'pending')
+                                                        @if (
+                                                            (Str::lower($order->payment_status) === 'down payment' && $order->status === 'pending') ||
+                                                                (Str::lower($order->payment_status) === 'payment settled' && $order->status === 'pending'))
                                                             <x-admin.order-update-status :id="$order->id"
                                                                 icon="bi-arrow-right-circle" status="in-progress"
                                                                 button="Move to In Progress" />
@@ -635,7 +688,11 @@
                                                                 button="Move to Done" />
                                                         @endif
 
-                                                        @if ($order->status === 'done' && Str::lower($order->payment_status) === 'payment settled' && ! $order->payments->isEmpty() && $order->payments->last()->type === 'full')
+                                                        @if (
+                                                            $order->status === 'done' &&
+                                                                Str::lower($order->payment_status) === 'payment settled' &&
+                                                                !$order->payments->isEmpty() &&
+                                                                $order->payments->last()->type === 'full')
                                                             <x-admin.order-update-status :id="$order->id"
                                                                 icon="bi-arrow-right-circle" status="completed"
                                                                 button="Move to Complete" />
@@ -677,7 +734,8 @@
     <!-- /.row -->
 
     <!-- Modal -->
-    <div class="modal fade" id="viewOrderModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="viewOrderModalLabel" aria-hidden="true">
+    <div class="modal fade" id="viewOrderModal" data-bs-backdrop="static" tabindex="-1"
+        aria-labelledby="viewOrderModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
@@ -702,8 +760,8 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="paymentDetailsModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="paymentDetailsModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="paymentDetailsModal" data-bs-backdrop="static" tabindex="-1"
+        aria-labelledby="paymentDetailsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
@@ -725,7 +783,8 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="addDiscountModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addDiscountModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addDiscountModal" data-bs-backdrop="static" tabindex="-1"
+        aria-labelledby="addDiscountModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -735,7 +794,8 @@
                     <x-admin.input-field name="discount" type="number" label="Discount (%)" />
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="discountBackButton" data-bs-dismiss="modal">Back</button>
+                    <button type="button" class="btn btn-secondary" id="discountBackButton"
+                        data-bs-dismiss="modal">Back</button>
                     <button type="button" class="btn btn-primary" id="discountSaveButton">Save</button>
                 </div>
             </div>

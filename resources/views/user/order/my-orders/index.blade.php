@@ -15,7 +15,7 @@
                         <th>Date</th>
                         <th>Order Type</th>
                         <th>Payment Type</th>
-                        <th>Order Payment Status</th>
+                        <th>Order Status</th>
                         <th>Order Payment Status</th>
                         <th>Remarks</th>
                         <th>Action</th>
@@ -201,7 +201,7 @@
                                                     Balance</a>
                                             </li>
                                         @endif
-                                        <li><a class="dropdown-item" href="#">View Payment</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="viewPaymentDetails('{{ $order->id }}')">View Payment</a></li>
                                         <li><a class="dropdown-item" href="#"
                                                 onclick="viewOrderDetails('{{ $order->id }}')">View Order
                                                 Details</a>
@@ -261,6 +261,29 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+     <!-- Modal -->
+    <div class="modal fade" id="paymentDetailsModal" data-bs-backdrop="static" tabindex="-1"
+        aria-labelledby="paymentDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="paymentDetailsModalLabel">Payment Details</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="">
+                        <div id="invoice"></div>
+                        <div id="paymentDetails"></div>
+                    </div>
+                </div>
+                {{-- <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div> --}}
             </div>
         </div>
     </div>

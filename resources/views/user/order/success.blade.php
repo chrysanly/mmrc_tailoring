@@ -5,7 +5,7 @@
             <div class="mx-auto">
                 <h1>Payment Successful! 🎉</h1>
                 <p>Your payment was processed successfully. Thank you!</p>
-                <a href="{{ route('home') }}" class="btn btn-primary">Return Home</a>
+                <a href="{{ route('user.order.my-orders') }}" class="btn btn-primary">View Order History</a>
             </div>
         </div>
 

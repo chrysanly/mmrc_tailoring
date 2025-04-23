@@ -282,3 +282,163 @@ function appendOrderReadyMadeDetails(data) {
                 </div>
             `;
 }
+
+
+// Payment Details
+
+const paymentInvoice = document.querySelector('#paymentDetailsModal #invoice');
+const paymentDetails = document.querySelector('#paymentDetailsModal #paymentDetails');
+
+function fetchPaymentDetails(id) {
+    ajaxGetRequest(`/user/order/api/view/${id}`)
+        .then(response => {
+
+            const data = response.data;
+            const invoice = data.invoice;
+            const payments = data.payments;
+            console.log(!invoice.is_paid);
+            console.log(data.status === 'pending');
+
+            discount = invoice.discount;
+            paymentInvoice.innerHTML = `
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="card-title">Invoice</div>
+                                <button type="button" class="btn btn-secondary btn-sm print-hidden" onclick="printModalContent()">Print</button>
+                            </div>
+                        </div> 
+                        <div class="card-body">
+                            <div class="d-flex justify-content-evenly align-items-center">
+                                <div class="row">
+                                    <span class="fw-bold">Bottom Price: </span>
+                                    <span>${invoice.bottom_price}</span>
+                                </div>
+                                <div class="row">
+                                    <span class="fw-bold">Top Price: </span>
+                                    <span>${invoice.top_price}</span>
+                                </div>
+                                <div class="row">
+                                    <span class="fw-bold">Set Price: </span>
+                                    <span>${invoice.set_price}</span>
+                                </div>
+                                <div class="row">
+                                    <span class="fw-bold">Additonal Price: </span>
+                                    <span>${invoice.additional_price}</span>
+                                </div>
+                                <div class="row">
+                                    <span class="fw-bold">Discount: </span>
+                                    <span>${invoice.discount ?? 0.0}%</span>
+                                </div>
+                                <div class="row">
+                                    <span class="fw-bold">Total: </span>
+                                    <span>${invoice.total}</span>
+                                </div>
+                                <div class="row">
+                                    <span class="fw-bold">Total Payment: </span>
+                                    <span>${invoice.total_payment ?? 0.00}</span>
+                                </div>
+                            </div>
+                        </div>   
+                    </div>
+                    `;
+
+            paymentDetails.innerHTML = `
+                    <div class="card mt-2">
+                        <div class="card-header">
+                            <div class="card-title">Payment Details</div>    
+                        </div> 
+                        <div class="card-body">
+                            <div id="paymentList"></div>
+                        </div>   
+                    </div> 
+                                `;
+
+            const paymentList = document.querySelector('#paymentDetailsModal #paymentDetails #paymentList');
+            const paymentTotal = document.querySelector('#paymentDetailsModal #paymentDetails #paymentTotal');
+
+            if (payments.length < 1) {
+                paymentList.innerHTML = `<p class="text-center">No payment as of the moment</p>`;
+            } else {
+                payments.forEach(payment => {
+                    paymentList.innerHTML += `
+                            <div class="d-flex justify-content-evenly align-items-center mt-4">
+                                <div class="d-flex flex-column">
+                                    <b>Contact Number:</b> 
+                                    ${payment.contact_number}
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <b>Referrence Number:</b> 
+                                    ${payment.referrence_number}
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <b>Account Name:</b> 
+                                    ${payment.account_name}
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <b>Amount:</b> 
+                                    ${payment.amount}
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <b>Type:</b> 
+                                    ${payment.type === 'downpayment' ? 'Down Payment' : payment.type === 'balance' ? 'Balance Payment' : 'Full Payment'}
+                                   
+                                </div>
+                                <a href="${payment.file_url}" target="_blank">
+                                     ${payment.file_url ? `<img src="${payment.file_url}" alt="Payment Image" width="100">` : ''}
+                                    </a>
+                                ${payment.is_verified ? `<p class="badge text-bg-success">Payment Verified</p>` : `<p class="badge text-bg-danger">Not Verified</p>`}
+                            </div>
+                        `;
+                })
+
+            }
+
+        })
+        .catch(error => {
+            console.error('Error fetching order payment details:', error);
+            swalMessage("Unable to load order payment details data");
+        });
+}
+
+function viewPaymentDetails(id) {
+    paymentId = id;
+    $('#paymentDetailsModal').modal('show');
+    fetchPaymentDetails(id);
+}
+
+function printModalContent() {
+    const modalContent = document.querySelector('#paymentDetailsModal').innerHTML; // Replace '.modal-content' with your modal's class or ID
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Payment Details</title>
+            <link rel="preconnect" href="https://fonts.bunny.net">
+            <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
+
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+                integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+            <link rel="stylesheet" href="{{ asset('assets/css/welcome.css') }}">
+            <style>
+                @page {
+                    size: landscape;
+                    margin: 20mm;
+                }
+                img { display: none; }
+                .print-hidden {
+                    display: none;
+                }
+            </style>
+        </head>
+        <body>
+            ${modalContent}
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+}
