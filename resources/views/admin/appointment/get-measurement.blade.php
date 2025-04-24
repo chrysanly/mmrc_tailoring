@@ -15,6 +15,8 @@
                     <div class="d-flex gap-2 justify-content-between mt-2">
                         @include('user.order.measurements_field')
                     </div>
+                    <input type="hidden" name="top" id="hiddenTop" value="{{ old('top') }}">
+                        <input type="hidden" name="bottom" id="hiddenBottom" value="{{ old('bottom') }}">
                     <button type="submit" class="btn btn-primary w-100 mt-2">Submit Order</button>
                 </form>
             </div>
