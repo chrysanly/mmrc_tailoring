@@ -81,6 +81,11 @@ class AppointmentController extends Controller
         if ($appointment->status === 'done') {
             Mail::to($appointment->user->email)->send(new SendUserAppointmentStatus($appointment));
         }
+        if ($appointment->status === 'completed') {
+            $appointment->update([
+                'completed_at' => now(),
+            ]);
+        }
 
         toast('Appointment moved to ' . ucwords(str_replace('-', ' ', $request->status)), 'success');
 

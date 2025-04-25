@@ -274,6 +274,7 @@ class OrderController extends Controller
     {
         $order->update([
             'status' => 'completed',
+            'completed_at' => now(),
         ]);
 
         toast('Order marked as completed, Thank you!', 'success');

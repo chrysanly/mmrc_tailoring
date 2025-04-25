@@ -209,12 +209,12 @@
                                 <div class="card-title">Invoice</div>
                             <div>
                                 ${!invoice.is_paid && data.status === 'pending' ? `
-                                <button type="button" class="btn btn-outline-primary btn-sm print-hidden" onclick="addDiscount('${invoice.id}')">
-                                    ${invoice.discount === null ? 'Add' : 'Update'} Discount (%)
-                                </button>
-                            ` : `
-                                <span class="badge text-bg-success print-hidden">Paid</span>
-                            `}
+                                        <button type="button" class="btn btn-outline-primary btn-sm print-hidden" onclick="addDiscount('${invoice.id}')">
+                                            ${invoice.discount === null ? 'Add' : 'Update'} Discount (%)
+                                        </button>
+                                    ` : `
+                                        <span class="badge text-bg-success print-hidden">Paid</span>
+                                    `}
 
                             <button type="button" class="btn btn-sm btn-secondary print-hidden" onclick="printModalContent()">Print</button>
                             </div>
@@ -526,9 +526,10 @@
 
 
         function printModalContent() {
-    const modalContent = document.querySelector('#paymentDetailsModal').innerHTML; // Replace '.modal-content' with your modal's class or ID
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
+            const modalContent = document.querySelector('#paymentDetailsModal')
+                .innerHTML; // Replace '.modal-content' with your modal's class or ID
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
         <html>
         <head>
             <title>Payment Details</title>
@@ -566,9 +567,9 @@
         </body>
         </html>
     `);
-    printWindow.document.close();
-    printWindow.print();
-}
+            printWindow.document.close();
+            printWindow.print();
+        }
     </script>
 @endpush
 
@@ -641,6 +642,9 @@
                                         <th>Top</th>
                                         <th>Bottom</th>
                                         <th>Status</th>
+                                        @if (request('status') === 'completed' || request('status') === 'all')
+                                            <th>Date Completed</th>
+                                        @endif
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -663,6 +667,9 @@
                                                     <span class="badge rounded-pill text-bg-success">Completed</span>
                                                 @endif
                                             </td>
+                                            @if (request(key: 'status') === 'completed' || request(key: 'status') === 'all')
+                                                <th>{{ $order->completed_at ?? '-' }}</th>
+                                            @endif
                                             <td width="2%">
                                                 <div class="dropdown">
                                                     <button class="btn btn-danger btn-sm dropdown-toggle" type="button"
@@ -693,9 +700,8 @@
                                                                 Str::lower($order->payment_status) === 'payment settled' &&
                                                                 !$order->payments->isEmpty() &&
                                                                 $order->payments->last()->type === 'fullpayment')
-                                                            <x-admin.order-update-status :id="$order->id"
-                                                                icon="bi-bell" status="completed"
-                                                                button="Send Reminder" />
+                                                            <x-admin.order-update-status :id="$order->id" icon="bi-bell"
+                                                                status="completed" button="Send Reminder" />
                                                         @endif
 
                                                         <li>

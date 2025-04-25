@@ -45,6 +45,7 @@
                         <x-admin.pie-chart-count title="Order Counts" pieChartId="orderPieChart" col="col-md-4"/>
                     </div>
 
+                    <h4>Order Sales Report</h4>
                     {{-- Sale Report --}}
                     <div class="card mb-4 p-2">
                         <div class="row mb-5">

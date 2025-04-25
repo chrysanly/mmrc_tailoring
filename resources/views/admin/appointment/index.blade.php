@@ -81,6 +81,9 @@
                                             <th>Date</th>
                                             <th>Time</th>
                                             <th>Status</th>
+                                            @if (request('status') === 'completed' || request('status') === 'all')
+                                                    <th>Date Completed</th>
+                                            @endif
                                             @if (request('status') === 'cancelled' || request('status') === 'all')
                                                 <th>Remarks</th>
                                             @endif
@@ -112,6 +115,9 @@
                                                         <span class="badge rounded-pill text-bg-danger">Cancelled</span>
                                                     @endif
                                                 </td>
+                                                @if (request('status') === 'completed' || request('status') === 'all')
+                                                    <th>{{ $appointment->completed_at ?? '-' }}</th>
+                                            @endif
 
                                                 @if (request('status') === 'cancelled' || request('status') === 'all')
                                                     <td>{{ $appointment->cancelled_reason ?? 'N/A' }}</td>
