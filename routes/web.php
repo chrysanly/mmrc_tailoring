@@ -91,10 +91,16 @@ Route::middleware('auth')->group(function () {
             Route::post('/', [UserController::class, 'store'])->name('admin.admin-users.store');
         });
         Route::prefix('settings')->middleware('role.superadmin')->group(function () {
-            Route::prefix('appointment-limit')->group(function () {
-                Route::get('/', [AppointmentLimitController::class, 'view'])->name('admin.settings.appointment-limit');
-                Route::post('/', [AppointmentLimitController::class, 'store'])->name('admin.settings.appointment-limit.store');
-            });
+            Route::get('/', [SettingsController::class, 'index'])->name('admin.settings.index');
+            Route::post('/store-appointment-limit', [SettingsController::class, 'storeAppointmentLimit'])->name('admin.settings.store-appointment-limit');
+            Route::post('/store-downpayment-percentage', [SettingsController::class, 'storeDownPaymentPercentage'])->name('admin.settings.store-downpayment-percentage');
+            Route::post('/store-appointment-time-limit', [SettingsController::class, 'storeAppointmentTimeLimit'])->name('admin.settings.store.appointment-time-limit');
+            // Route::prefix('appointment-limit')->group(function () {
+            //     Route::get('/', [AppointmentLimitController::class, 'view'])->name('admin.settings.appointment-limit');
+            //     Route::post('/', [AppointmentLimitController::class, 'store'])->name('admin.settings.appointment-limit.store');
+            // });
+
+            
             Route::prefix('payment-option')->group(function () {
                 Route::get('/', [PaymentController::class, 'index'])->name('admin.settings.payment-option');
 
@@ -106,11 +112,11 @@ Route::middleware('auth')->group(function () {
                     Route::delete('/destroy/{paymentOptions}', [PaymentController::class, 'destroy'])->name('admin.settings.payment-option.destroy');
                 });
             });
-            Route::prefix('percentage')->group(function () {
-                Route::get('/', [PercentageController::class, 'index'])->name('admin.settings.percentage.index');
-                Route::post('/', [PercentageController::class, 'store'])->name('admin.settings.percentage.store');
-                // Route::post('/', [AppointmentLimitController::class, 'store'])->name('admin.settings.appointment-limit.store');
-            });
+            // Route::prefix('percentage')->group(function () {
+            //     Route::get('/', [PercentageController::class, 'index'])->name('admin.settings.percentage.index');
+            //     Route::post('/', [PercentageController::class, 'store'])->name('admin.settings.percentage.store');
+            //     // Route::post('/', [AppointmentLimitController::class, 'store'])->name('admin.settings.appointment-limit.store');
+            // });
         });
     });
 
@@ -121,6 +127,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/fetch-appointments', [AppointmentController::class, 'getAllAppointments'])->name('user.appointment.fetch-appointments');
             Route::post('/store', [AppointmentController::class, 'store'])->name('user.appointment.store');
             Route::put('/cancel/{appointment}', [AppointmentController::class, 'cancelAppointment'])->name('user.appointment.cancel-appointment');
+            Route::get('/api/get-available-time-by-date', [AppointmentController::class, 'getAvailableTimeByDate'])->name('user.appointment.get-available-time-by-date');
         });
 
 

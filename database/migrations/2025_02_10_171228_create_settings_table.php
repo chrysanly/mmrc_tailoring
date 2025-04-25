@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->string('appointment_limit')->default(0);
+            $table->string('module')->nullable();
+            $table->string('limit')->default(0);
             $table->timestamps();
         });
     }

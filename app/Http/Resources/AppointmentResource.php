@@ -20,8 +20,7 @@ class AppointmentResource extends JsonResource
             'date' => $this->date,
             'count' => $this->appointments->count(),
             'schedules' => $this->appointments->map(fn($appointment) => [
-                'time_from' => Carbon::parse($appointment->time_from)->format('g:i A'),
-                'time_to' => Carbon::parse($appointment->time_to)->format('g:i A'),
+                'time' =>$appointment->time,
                 'status' => $appointment->status,
                 'my_appointment' => $appointment->user_id === auth()->id(),
             ]),

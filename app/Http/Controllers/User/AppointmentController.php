@@ -39,7 +39,7 @@ class AppointmentController extends Controller
         $appointments = Appointment::selectRaw('date, MAX(id) as id, MAX(user_id) as user_id')
             ->groupBy('date')
             ->with(['appointments' => function ($query) {
-                $query->select(['date', 'time_from', 'time_to', 'status','user_id']);
+                $query->select(['date','time', 'status', 'user_id']);
             }])
             ->get();
 
@@ -54,13 +54,14 @@ class AppointmentController extends Controller
         $dayOfWeek = $appointmentDate->format('l'); // Get full weekday name (e.g., Monday)
 
         $storeSchedule = $this->getStoreSchedule($appointmentDate->toDateString());
-
+     
         $formattedStoreHours = [];
 
         foreach ($storeSchedule as $entry) {
             [$day, $hours] = explode(":", $entry, 2); // Split by ":"
             $formattedStoreHours[trim($day)] = trim($hours);
         }
+
 
         if ($formattedStoreHours[$dayOfWeek] === 'Closed') {
             return response()->json([
@@ -78,18 +79,19 @@ class AppointmentController extends Controller
             ], 422);
         }
 
-        if ($request->time_from === null || $request->time_to === null) {
+        if ($request->time === null) {
             return response()->json([
-                'message' => 'Please select both start and end times for your appointment.',
+                'message' => 'Please select time for your appointment.',
             ], 422);
         }
 
         [$open, $close] = explode(" - ", $formattedStoreHours[$dayOfWeek], 2); // Split by " - "
 
-        $storeOpen = Carbon::parse($appointmentDate->toDateString() . ' '. $open);
+        [$start, $end] = explode('-', str_replace(' ', '', $request->time), 2); // Split by "-"
+        $storeOpen = Carbon::parse($appointmentDate->toDateString() . ' ' . $open);
         $storeClose = Carbon::parse($appointmentDate->toDateString() . ' ' . $close);
-        $requestedStart = Carbon::parse($appointmentDate->toDateString() . ' ' . $request->time_from);
-        $requestedEnd = Carbon::parse($appointmentDate->toDateString() . ' ' . $request->time_to);
+        $requestedStart = Carbon::parse($appointmentDate->toDateString() . ' ' . $start);
+        $requestedEnd = Carbon::parse($appointmentDate->toDateString() . ' ' . $end);
 
         if ($requestedStart < $storeOpen || $requestedEnd > $storeClose) {
             return response()->json([
@@ -101,8 +103,7 @@ class AppointmentController extends Controller
 
         Appointment::create([
             'date' => $request->date,
-            'time_from' => $request->time_from,
-            'time_to' => $request->time_to,
+            'time' => $request->time,
             'user_id' => auth()->id()
         ]);
 
@@ -140,5 +141,60 @@ class AppointmentController extends Controller
         return response()->json([
             'message' => 'Appointment cancelled successfully.',
         ], 200);
-    }   
+    }
+
+    public function getAvailableTimeByDate(Request $request)
+    {
+        $data = $request->date;
+        $appointmentDate = Carbon::parse($request->date);
+        $appointments = Appointment::where('date', $data)
+            ->get()->pluck('time')->toArray();
+
+        // Start time and End time for the appointment slots
+        $storeSchedule = $this->getStoreSchedule($appointmentDate->toDateString());
+
+        $currentDay = Carbon::now()->format('l'); // 'l' gives the full name of the day, like "Monday", "Tuesday", etc.
+
+        $currentDaySchedule = collect($storeSchedule)->first(function ($schedule) use ($currentDay) {
+            return strpos($schedule, $currentDay) === 0; // Check if the schedule starts with the current day
+        });
+
+        $currentDayTimeRange = trim(explode(':', $currentDaySchedule, 2)[1]);
+        [$open, $close] = explode('-', str_replace(' ', '', $currentDayTimeRange));
+
+        $interval = (int) Settings::where('module', 'appointment_time_limit')->first()->limit;;
+        $timeSlots = $this->generateTimeIntervals($open, $close, $interval);
+
+        $data = [];
+        foreach ($timeSlots as $slot) {
+            $status = in_array($slot, $appointments) ? 'not available' : 'available';
+            $data[] = [
+                'time' => $slot,
+                'status' => $status,
+            ];
+        }
+        return response()->json($data);
+    }
+
+    private function generateTimeIntervals($start, $end, $interval)
+    {
+        $startTime = Carbon::createFromFormat('g:iA', $start);
+        $endTime = Carbon::createFromFormat('g:iA', $end); // Do not add a day here
+
+        $timeSlots = [];
+
+        while ($startTime->lt($endTime)) { // Ensure it only generates until the end time
+            $slotStart = $startTime->format('g:iA');
+            $slotEnd = $startTime->copy()->addMinutes($interval)->format('g:iA');
+
+            if ($startTime->copy()->addMinutes($interval)->gt($endTime)) {
+                break; // Stop when adding the interval exceeds the end time
+            }
+
+            $timeSlots[] = "$slotStart - $slotEnd";
+            $startTime->addMinutes($interval);
+        }
+
+        return $timeSlots;
+    }
 }

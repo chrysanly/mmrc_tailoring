@@ -11,9 +11,6 @@ class Appointment extends Model
     use HasFactory;
 
     protected $guarded = [];
-    protected $appends = [
-        'appointment_time',
-    ];
 
     public function user()
     {
@@ -44,10 +41,5 @@ class Appointment extends Model
     public function getBottomAttribute($value)
     {
         return $value ? ucwords($value) : 'N/A';
-    }
-
-    public function getAppointmentTimeAttribute()
-    {
-        return Carbon::parse($this->time_from)->format('g:i A') . ' - ' . Carbon::parse($this->time_to)->format('g:i A');
     }
 }

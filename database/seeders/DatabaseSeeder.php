@@ -41,8 +41,19 @@ class DatabaseSeeder extends Seeder
             'role' => 'user',
         ]);
         
-        Settings::create([
-            'appointment_limit' => 5,
+        Settings::insert([
+            [
+                'module' => 'appointment_max_limit',
+                'limit' => 5,
+            ],
+            [
+                'module' => 'appointment_time_limit',
+                'limit' => 30,
+            ],
+            [
+                'module' => 'downpayment_percentage',
+                'limit' => 50,
+            ]
         ]);
 
         $uniform = UniformPrice::factory()->create([

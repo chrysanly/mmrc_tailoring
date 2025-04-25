@@ -251,6 +251,10 @@
                                     <span class="fw-bold">Total Payment: </span>
                                     <span>${invoice.total_payment ?? 0.00}</span>
                                 </div>
+                                <div class="row">
+                                    <span class="fw-bold">Balance: </span>
+                                    <span>${invoice.total - invoice.total_payment ?? 0.00}</span>
+                                </div>
                             </div>
                         </div>   
                     </div>

@@ -96,7 +96,7 @@ const calendar = new FullCalendar.Calendar(calendarEl, {
 
                 info.event.extendedProps.schedules.forEach(schedule => {
                     let listItem = document.createElement('li');
-                    listItem.innerText = `${schedule.time_from} - ${schedule.time_to}`;
+                    listItem.innerText = `${schedule.time}`;
                     if (schedule.my_appointment) {
                         listItem.style.backgroundColor = '#f8d7da';
                     } else {
@@ -124,6 +124,28 @@ const calendar = new FullCalendar.Calendar(calendarEl, {
             const modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
             document.getElementById('modalDate').innerText = selectedDate;
             document.getElementById('selectedDate').value = selectedDate;
+            console.log(selectedDate);
+            fetch(getAvailableTimeByDate + `?date=${selectedDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    const timeSelect = document.getElementById('timeSelect');
+
+                    timeSelect.innerHTML = `<option selected disabled> --SELECT TIME--</option>`;
+
+                    data.forEach(time => {
+                        const option = document.createElement('option');
+                        option.value = time.time;
+                        if (time.status !== 'available') {
+                            option.classList.add('text-bg-danger', 'text-white');
+                        }
+                        option.disabled = time.status === 'available' ? false : true;
+                        option.textContent = `${time.time}`;
+                        timeSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching available time:", error);
+                });
             modal.show();
         }
     },
@@ -145,8 +167,7 @@ $("#appointmentForm").click(function () {
 
 const submitAppointment = async () => {
     const formData = new FormData();
-    formData.append('time_from', $("#from").val());
-    formData.append('time_to', $("#to").val());
+    formData.append('time', $("#timeSelect").val());
     formData.append('date', $("#selectedDate").val());
 
     // Debugging: Check formData contents

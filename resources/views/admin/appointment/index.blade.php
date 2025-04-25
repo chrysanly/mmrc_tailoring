@@ -97,7 +97,7 @@
                                                 <td>{{ $appointment->user->fullname }}</td>
                                                 <td>{{ $appointment->user->email }}</td>
                                                 <td>{{ $appointment->date }}</td>
-                                                <td>{{ $appointment->appointment_time }}</td>
+                                                <td>{{ $appointment->time ?? '-' }}</td>
 
                                                 <td class="text-center">
                                                     @if ($appointment->status === 'pending')

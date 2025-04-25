@@ -95,16 +95,12 @@
                         <x-admin.dropdown-list active="{{ request()->routeIs('admin.settings.*') }}">
                             <x-slot name="title">Settings</x-slot>
                             <x-slot name="icon"><i class="nav-icon bi bi-gear"></i></x-slot>
-                            <x-admin.list-link link="{{ route('admin.settings.appointment-limit') }}" active="{{ request()->routeIs('admin.settings.appointment-limit') }}">
-                                <x-slot name="title">Appointment Limit</x-slot>
+                            <x-admin.list-link link="{{ route('admin.settings.index') }}" active="{{ request()->routeIs('admin.settings.index') }}">
+                                <x-slot name="title">Settings</x-slot>
                                 <x-slot name="icon"><i class="nav-icon bi bi-calendar2-check"></i></x-slot>
                             </x-admin.list-link>
                             <x-admin.list-link link="{{ route('admin.settings.payment-option') }}" active="{{ request()->routeIs('admin.settings.payment-option') }}">
                                 <x-slot name="title">Payment Options</x-slot>
-                                <x-slot name="icon"><i class="nav-icon bi bi-credit-card"></i></x-slot>
-                            </x-admin.list-link>
-                            <x-admin.list-link link="{{ route('admin.settings.percentage.index') }}" active="{{ request()->routeIs('admin.settings.percentage.index') }}">
-                                <x-slot name="title">DP Percentage</x-slot>
                                 <x-slot name="icon"><i class="nav-icon bi bi-credit-card"></i></x-slot>
                             </x-admin.list-link>
                         </x-admin.dropdown-list>
