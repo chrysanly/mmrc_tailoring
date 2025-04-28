@@ -6,32 +6,6 @@
     <script src="{{ asset('assets/admin/js/appointment.js') }}"></script>
     <script>
         const getAvailableTimeByDate = "{{ route('admin.appointment.get-available-time-by-date') }}";
-        const dateInput = document.getElementById('dateInput');
-
-        $("#dateInput").on('change', function() {
-            const selectedDate = $(this).val();
-            const timeSelect = document.getElementById('timeSelect');
-
-            timeSelect.innerHTML = `<option selected disabled> --SELECT TIME--</option>`;
-
-            fetch(getAvailableTimeByDate + `?date=${selectedDate}`)
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(time => {
-                        const option = document.createElement('option');
-                        option.value = time.time;
-                        if (time.status !== 'available') {
-                            option.classList.add('text-bg-danger', 'text-white');
-                        }
-                        option.disabled = time.status === 'available' ? false : true;
-                        option.textContent = `${time.time}`;
-                        timeSelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error("Error fetching available time:", error);
-                });
-        });
     </script>
 @endpush
 
@@ -65,6 +39,13 @@
                 'name' => 'Done',
                 'route' => route('admin.appointment.index', [
                     'status' => 'done',
+                ]),
+            ],
+            [
+                'id' => 'pick-up',
+                'name' => 'Pick Up',
+                'route' => route('admin.appointment.index', [
+                    'status' => 'pick-up',
                 ]),
             ],
             [
@@ -144,6 +125,8 @@
                                                         <span class="badge rounded-pill text-bg-info">Done</span>
                                                     @elseif ($appointment->status === 'completed')
                                                         <span class="badge rounded-pill text-bg-success">Completed</span>
+                                                    @elseif ($appointment->status === 'pick-up')
+                                                        <span class="badge rounded-pill text-bg-success">Pick Up</span>
                                                     @elseif ($appointment->status === 'cancelled')
                                                         <span class="badge rounded-pill text-bg-danger">Cancelled</span>
                                                     @endif
@@ -181,6 +164,11 @@
                                                                     </li>
                                                                 @endif
                                                                 @if ($appointment->status === 'done')
+                                                                    <x-admin.appointment-update-status :id="$appointment->id"
+                                                                        status="pick-up" button="Move to Pick Up" />
+                                                                    </li>
+                                                                @endif
+                                                                @if ($appointment->status === 'pick-up')
                                                                     <x-admin.appointment-update-status :id="$appointment->id"
                                                                         status="completed" button="Move to Complete" />
                                                                     </li>

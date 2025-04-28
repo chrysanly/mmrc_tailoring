@@ -73,3 +73,34 @@ const cancelAppointment = async (id) => {
         console.error("Error cancelling appointment:", error);
     }
 }
+
+
+// Reschedule Appointment
+const dateInput = document.getElementById('dateInput');
+
+$("#dateInput").on('change', function () {
+    const selectedDate = $(this).val();
+    const timeSelect = document.getElementById('timeSelect');
+
+    timeSelect.innerHTML = `<option selected disabled> --SELECT TIME--</option>`;
+
+    fetch(getAvailableTimeByDate + `?date=${selectedDate}`)
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(time => {
+                const option = document.createElement('option');
+                option.value = time.time;
+                if (time.status !== 'available') {
+                    option.classList.add('text-bg-danger', 'text-white');
+                }
+                option.disabled = time.status === 'available' ? false : true;
+                option.textContent = `${time.time}`;
+                timeSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error("Error fetching available time:", error);
+        });
+});
+
+// End Reschedule Appointment
