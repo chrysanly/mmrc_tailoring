@@ -53,7 +53,6 @@ class OrderController extends Controller
         }
 
 
-
         $orderPayment->update([
             'is_verified' => true,
         ]);
@@ -82,21 +81,14 @@ class OrderController extends Controller
         
 
 
-        if ($request->status === 'in-progress') {
+        if ($request->status === 'in-progress' || $request->status === 'done' || $request->status === 'pick-up') {
             toast('Order updated to ' . ucwords(str_replace('-', ' ', $request->status)) . ' and the user has been notified via email.', 'success');
-            Mail::to($order->user->email)->send(new SendUserOrderStatusInProgress($order));
+            Mail::to($order->user->email)->send(new SendUserOrderStatus($order, $request->status));
             $order->update([
                 'status' => $request->status,
             ]);
         }
-
-        if ($request->status === 'done') {
-            toast('Order updated to ' . ucwords(str_replace('-', ' ', $request->status)) . ' and the user has been notified via email.', 'success');
-            Mail::to($order->user->email)->send(new SendUserOrderStatusDone($order));
-            $order->update([
-                'status' => $request->status,
-            ]);
-        }
+        
 
         if ($request->status === 'completed') {
             toast('The user has been successfully reminded via email.', 'success');

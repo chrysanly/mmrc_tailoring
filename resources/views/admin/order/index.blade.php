@@ -77,6 +77,13 @@
                 ]),
             ],
             [
+                'id' => 'pick-up',
+                'name' => 'Pick Up',
+                'route' => route('admin.order.index', [
+                    'status' => 'pick-up',
+                ]),
+            ],
+            [
                 'id' => 'completed',
                 'name' => 'Completed',
                 'route' => route('admin.order.index', [
@@ -135,6 +142,8 @@
                                                     <span class="badge rounded-pill text-bg-info">In Progress</span>
                                                 @elseif ($order->status === 'done')
                                                     <span class="badge rounded-pill text-bg-primary">Done</span>
+                                                @elseif ($order->status === 'pick-up')
+                                                    <span class="badge rounded-pill text-bg-warning">Pick Up</span>
                                                 @else
                                                     <span class="badge rounded-pill text-bg-success">Completed</span>
                                                 @endif
@@ -169,6 +178,14 @@
 
                                                         @if (
                                                             $order->status === 'done' &&
+                                                                Str::lower($order->payment_status) === 'payment settled' &&
+                                                                !$order->payments->isEmpty() &&
+                                                                $order->payments->last()->type === 'fullpayment')
+                                                            <x-admin.order-update-status :id="$order->id" icon="bi-truck"
+                                                                status="pick-up" button="Move to Pick Up" />
+                                                        @endif
+                                                        @if (
+                                                            $order->status === 'pick-up' &&
                                                                 Str::lower($order->payment_status) === 'payment settled' &&
                                                                 !$order->payments->isEmpty() &&
                                                                 $order->payments->last()->type === 'fullpayment')
