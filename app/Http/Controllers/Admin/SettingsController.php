@@ -2,69 +2,58 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Settings;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\PaymentOptions;
-use App\Models\Settings;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class SettingsController extends Controller
 {
     public function index(): View
     {
         return view('admin.settings.settings', [
-            'appointmentMaxLimit' => $this->settingValues('appointment_max_limit'),
-            'appointmentTimeLimit' => $this->settingValues('appointment_time_limit'),
-            'downpaymentPercentage' => $this->settingValues('downpayment_percentage'),
+            'appointmentMaxLimit' => Settings::appointmentMaxLimit(),
+            'appointmentTimeLimit' => Settings::appointmentTimeLimit(),
+            'downpaymentPercentage' => Settings::downpaymentPercentage(),
         ]);
     }
 
     public function storeAppointmentLimit(Request $request)
     {
-        $this->validate($request, [
-            'limit' => 'required|string',
-        ]);
-
-        $settings = Settings::where('module', 'appointment_max_limit')->first();
-        $settings->limit = $request->limit;
-        $settings->save();
-
-        toast('Appointment Max Limit Successfully Updated.', 'success');
-
-        return redirect()->back();
+        return $this->logic('whereAppointmentMaxLimit', $request, 'Appointment Max Limit');
     }
 
     public function storeDownPaymentPercentage(Request $request)
     {
-        $request->validate([
-            'percentage' => 'required|numeric|min:0|max:100',
-        ]);
-
-        $settings = Settings::where('module', 'downpayment_percentage')->first();
-        $settings->limit = $request->percentage;
-        $settings->save();
-
-        toast('Percentage saved successfully.', 'success');
-        return redirect()->back();
+        return $this->logic('whereDownpaymentPercentage', $request, 'Percentage');
     }
 
     public function storeAppointmentTimeLimit(Request $request)
     {
+        return $this->logic('whereAppointmentTimeLimit', $request, 'Appointments Time Limit');
+    }
+
+    private function logic(string $where, Request $request, string $message): RedirectResponse
+    {
+
         $this->validate($request, [
-            'limit' => 'required|string',
+            'limit' => 'required|numeric',
         ]);
 
-        $settings = Settings::where('module', 'appointment_time_limit')->first();
+        if ($request->limit > 100) {
+            toast($message . ' field must not be greater than 100.', 'error');
+            return redirect()->back();
+        }
+
+        $settings = Settings::$where();
         $settings->limit = $request->limit;
         $settings->save();
 
-        toast('Appointments Time Limit Successfully Updated.', 'success');
+        toast($message . ' Successfully Updated.', 'success');
 
         return redirect()->back();
-    }
-
-    private function settingValues(string $module): int
-    {
-        return (int) Settings::where('module', $module)->first()->limit;
     }
 }

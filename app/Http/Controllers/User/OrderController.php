@@ -210,7 +210,7 @@ class OrderController extends Controller
             'order' => $order,
             'formType' => $form_type,
             'paymentOptions' => PaymentOptions::all(),
-            'downpayment' => Settings::first()->downpayment,
+            'downpayment' => Settings::downpaymentPercentage(),
         ]);
     }
 
@@ -220,7 +220,7 @@ class OrderController extends Controller
         $validatedData = $request->safe()->except('file'); // Remove file safely
         $validatedData['order_id'] = $order->id;
         $file = $request->file('file'); // Get the file
-        $downpayment = Settings::first()->downpayment;
+        $downpayment = Settings::downpaymentPercentage();
         $amount = 0;
         if ($request->type === 'downpayment') {
             $amount = $order->invoice->total * ($downpayment / 100);
