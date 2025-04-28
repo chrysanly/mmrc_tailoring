@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Traits\AvailableTimeTrait;
 use Carbon\Carbon;
 use App\Models\Polo;
 use App\Models\Vest;
@@ -29,6 +30,8 @@ class AppointmentController extends Controller
 {
     use UniformTrait;
     use StoreScheduleTrait;
+    use AvailableTimeTrait;
+
     public function index()
     {
         $appointments = Appointment::with('topMeasurement.measurable', 'bottomMeasurement.measurable')
@@ -98,8 +101,7 @@ class AppointmentController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'date' => 'required|date:Y-m-d',
-            'time_from' => 'required|date_format:H:i',
-            'time_to' => 'required|date_format:H:i|after:tim_from',
+            'time' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -138,18 +140,22 @@ class AppointmentController extends Controller
             ], 422);
         }
 
-        if ($request->time_from === null || $request->time_to === null) {
+        if ($request->time === null) {
             return response()->json([
-                'message' => 'Please select both start and end times for your appointment.',
+                'message' => 'Please select time for your appointment.',
             ], 422);
         }
 
+
         [$open, $close] = explode(" - ", $formattedStoreHours[$dayOfWeek], 2); // Split by " - "
+
+        [$start, $end] = explode('-', str_replace(' ', '', $request->time), 2); // Split by "-"
 
         $storeOpen = Carbon::parse($appointmentDate->toDateString() . ' ' . $open);
         $storeClose = Carbon::parse($appointmentDate->toDateString() . ' ' . $close);
-        $requestedStart = Carbon::parse($appointmentDate->toDateString() . ' ' . $request->time_from);
-        $requestedEnd = Carbon::parse($appointmentDate->toDateString() . ' ' . $request->time_to);
+        $requestedStart = Carbon::parse($appointmentDate->toDateString() . ' ' . $start);
+        $requestedEnd = Carbon::parse($appointmentDate->toDateString() . ' ' . $end);
+
 
         if ($requestedStart < $storeOpen || $requestedEnd > $storeClose) {
             return response()->json([
@@ -158,15 +164,18 @@ class AppointmentController extends Controller
                     "Please select a valid time range.",
             ], 422);
         }
-        
+
+
+
         $appointment->update([
             'date' => $request->date,
-            'time_from' => $request->time_from,
-            'time_to' => $request->time_to,
+            'time' => $request->time,
             'status' => 'pending',
         ]);
 
+
         Mail::to($appointment->user->email)->send(new SendUserRescheduleAppointment($appointment));
+
 
         return response()->json([
             'message' => 'Appointment rescheduled successfully.',
@@ -202,5 +211,10 @@ class AppointmentController extends Controller
         return response()->json([
             'message' => 'Appointment cancelled successfully.',
         ], 200);
+    }
+
+    public function getAvailableTimeByDate(Request $request)
+    {
+        return response()->json($this->execute($request));
     }
 }

@@ -38,7 +38,7 @@ class SendUserRescheduleAppointment extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.send-user-reschedule-appointment',
+            markdown: 'mail.send-user-reschedule-appointment',
         );
     }
 
