@@ -217,4 +217,10 @@ class AppointmentController extends Controller
     {
         return response()->json($this->execute($request));
     }
+
+    public function getAppointmentMeasurement(Appointment $appointment)
+    {
+        $appointment->load(['topMeasurement.measurable', 'bottomMeasurement.measurable']);
+        return response()->json($appointment);
+    }
 }

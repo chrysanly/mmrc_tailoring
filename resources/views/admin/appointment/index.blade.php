@@ -162,6 +162,9 @@
                                                                         <x-admin.appointment-update-status :id="$appointment->id"
                                                                             status="done" button="Move to Done" />
                                                                     </li>
+                                                                    <li>
+                                                                        <a class="dropdown-item" href="{{ route('admin.appointment.get-measurement', $appointment) }}">Edit Measurement</a>
+                                                                    </li>
                                                                 @endif
                                                                 @if ($appointment->status === 'done')
                                                                     <x-admin.appointment-update-status :id="$appointment->id"

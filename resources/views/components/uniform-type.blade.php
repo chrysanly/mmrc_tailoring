@@ -85,7 +85,6 @@
 
         function showTop() {
             const top = uniformTop.value;
-
             selectedTop(top);
         }
 

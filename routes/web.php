@@ -59,6 +59,7 @@ Route::middleware('auth')->group(function () {
             Route::patch('/resched/{appointment}', [AdminAppointmentController::class, 'reschedule'])->name('admin.appointment.reschedule');
             Route::patch('/cancel/{appointment}', [AdminAppointmentController::class, 'cancelAppointment'])->name('admin.appointment.cancel');
             Route::get('/api/get-available-time-by-date', [AdminAppointmentController::class, 'getAvailableTimeByDate'])->name('admin.appointment.get-available-time-by-date');
+            Route::get('/api/get-appointment-measurement/{appointment}', [AdminAppointmentController::class, 'getAppointmentMeasurement'])->name('admin.appointment.get-appointment-measurement');
         });
         Route::prefix('order')->group(function () {
             Route::get('/', [AdminOrderController::class, 'index'])->name('admin.order.index');
