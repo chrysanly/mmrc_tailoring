@@ -45,7 +45,7 @@ trait UniformTrait
 
         if ($request->top && isset($storeTopType[$request->top])) {
             $selectedTop = $storeTopType[$request->top];
-            $data = $this->{$selectedTop['data']}($request, $topMeasurement->top_measure_id);
+            $data = $this->{$selectedTop['data']}($request, $topMeasurement->top_measure_id ?? null);
             $model->topMeasurement()->updateOrCreate(
                 [
                     'id' => optional($topMeasurement)->id,
@@ -57,13 +57,14 @@ trait UniformTrait
             );
         }
 
-        unset($storeTopType[$request->top]);
+        if (isset($topMeasurement->top_measure_id)) {
+            unset($storeTopType[$request->top]);
 
-        foreach ($storeTopType as $key => $value) {
-            $modelClass = $value['class']; // This correctly gets the model class
-            $modelClass::find($topMeasurement->top_measure_id)?->delete(); // Safe deletion using null-safe operator
+            foreach ($storeTopType as $key => $value) {
+                $modelClass = $value['class']; // This correctly gets the model class
+                $modelClass::find($topMeasurement->top_measure_id)?->delete(); // Safe deletion using null-safe operator
+            }
         }
-        
     }
 
     private function storeBottom(Request $request, Model $model): void
@@ -100,11 +101,13 @@ trait UniformTrait
             );
         }
 
-        unset($storeBottomType[$request->bottom]);
+        if (isset($bottomMeasurement->bottom_measure_id)) {
+            unset($storeBottomType[$request->bottom]);
 
-        foreach ($storeBottomType as $key => $value) {
-            $modelClass = $value['class']; // This correctly gets the model class
-            $modelClass::find($bottomMeasurement->bottom_measure_id)?->delete(); // Safe deletion using null-safe operator
+            foreach ($storeBottomType as $key => $value) {
+                $modelClass = $value['class']; // This correctly gets the model class
+                $modelClass::find($bottomMeasurement->bottom_measure_id)?->delete(); // Safe deletion using null-safe operator
+            }
         }
     }
 
@@ -113,14 +116,15 @@ trait UniformTrait
         return Polo::updateOrCreate(
             ['id' => $id], // Condition to find an existing record
             [
-            'polo_chest' => $request->polo_chest,
-            'polo_length' => $request->polo_length,
-            'polo_hips' => $request->polo_hips,
-            'polo_shoulder' => $request->polo_shoulder,
-            'polo_sleeve' => $request->polo_sleeve,
-            'polo_armhole' => $request->polo_armhole,
-            'polo_lower_arm_girth' => $request->polo_lower_arm_girth,
-        ]);
+                'polo_chest' => $request->polo_chest,
+                'polo_length' => $request->polo_length,
+                'polo_hips' => $request->polo_hips,
+                'polo_shoulder' => $request->polo_shoulder,
+                'polo_sleeve' => $request->polo_sleeve,
+                'polo_armhole' => $request->polo_armhole,
+                'polo_lower_arm_girth' => $request->polo_lower_arm_girth,
+            ]
+        );
     }
 
     private function storeBlouse(Request $request, int|null $id): Blouse|Model
@@ -128,44 +132,47 @@ trait UniformTrait
         return Blouse::updateOrCreate(
             ['id' => $id], // Condition to find an existing record
             [
-            'blouse_bust' => $request->blouse_bust,
-            'blouse_length' => $request->blouse_length,
-            'blouse_waist' => $request->blouse_waist,
-            'blouse_figure' => $request->blouse_figure,
-            'blouse_hips' => $request->blouse_hips,
-            'blouse_shoulder' => $request->blouse_shoulder,
-            'blouse_sleeve' => $request->blouse_sleeve,
-            'blouse_arm_hole' => $request->blouse_arm_hole,
-            'blouse_lower_arm_girth' => $request->blouse_lower_arm_girth,
-        ]);
+                'blouse_bust' => $request->blouse_bust,
+                'blouse_length' => $request->blouse_length,
+                'blouse_waist' => $request->blouse_waist,
+                'blouse_figure' => $request->blouse_figure,
+                'blouse_hips' => $request->blouse_hips,
+                'blouse_shoulder' => $request->blouse_shoulder,
+                'blouse_sleeve' => $request->blouse_sleeve,
+                'blouse_arm_hole' => $request->blouse_arm_hole,
+                'blouse_lower_arm_girth' => $request->blouse_lower_arm_girth,
+            ]
+        );
     }
     private function storeVest(Request $request, int|null $id): Model|Vest
     {
         return Vest::updateOrCreate(
             ['id' => $id], // Condition to find an existing record
             [
-            'vest_armhole' => $request->vest_armhole,
-            'vest_full_length' => $request->vest_full_length,
-            'vest_shoulder_width' => $request->vest_shoulder_width,
-            'vest_neck_circumference' => $request->vest_neck_circumference,
-        ]);
+                'vest_armhole' => $request->vest_armhole,
+                'vest_full_length' => $request->vest_full_length,
+                'vest_shoulder_width' => $request->vest_shoulder_width,
+                'vest_neck_circumference' => $request->vest_neck_circumference,
+            ]
+        );
     }
     private function storeBlazer(Request $request, int|null $id): Blazer|Model
     {
         return Blazer::updateOrCreate(
             ['id' => $id], // Condition to find an existing record
             [
-            'blazer_chest' => $request->blazer_chest,
-            'blazer_shoulder_width' => $request->blazer_shoulder_width,
-            'blazer_length' => $request->blazer_length,
-            'blazer_sleeve_length' => $request->blazer_sleeve_length,
-            'blazer_waist' => $request->blazer_waist,
-            'blazer_hips' => $request->blazer_hips,
-            'blazer_armhole' => $request->blazer_armhole,
-            'blazer_wrist' => $request->blazer_wrist,
-            'blazer_back_width' => $request->blazer_back_width,
-            'blazer_lower_arm_girth' => $request->blazer_lower_arm_girth,
-        ]);
+                'blazer_chest' => $request->blazer_chest,
+                'blazer_shoulder_width' => $request->blazer_shoulder_width,
+                'blazer_length' => $request->blazer_length,
+                'blazer_sleeve_length' => $request->blazer_sleeve_length,
+                'blazer_waist' => $request->blazer_waist,
+                'blazer_hips' => $request->blazer_hips,
+                'blazer_armhole' => $request->blazer_armhole,
+                'blazer_wrist' => $request->blazer_wrist,
+                'blazer_back_width' => $request->blazer_back_width,
+                'blazer_lower_arm_girth' => $request->blazer_lower_arm_girth,
+            ]
+        );
     }
 
     private function storePants(Request $request, int|null $id): Model|Pants
@@ -173,14 +180,15 @@ trait UniformTrait
         return Pants::updateOrCreate(
             ['id' => $id], // Condition to find an existing record
             [
-            'pants_length' => $request->pants_length,
-            'pants_waist' => $request->pants_waist,
-            'pants_hips' => $request->pants_hips,
-            'pants_scrotch' => $request->pants_scrotch,
-            'pants_knee_height' => $request->pants_knee_height,
-            'pants_knee_circumference' => $request->pants_knee_circumference,
-            'pants_bottom_circumferem' => $request->pants_bottom_circumferem,
-        ]);
+                'pants_length' => $request->pants_length,
+                'pants_waist' => $request->pants_waist,
+                'pants_hips' => $request->pants_hips,
+                'pants_scrotch' => $request->pants_scrotch,
+                'pants_knee_height' => $request->pants_knee_height,
+                'pants_knee_circumference' => $request->pants_knee_circumference,
+                'pants_bottom_circumferem' => $request->pants_bottom_circumferem,
+            ]
+        );
     }
 
     private function storeShort(Request $request, int|null $id): Model|Short
