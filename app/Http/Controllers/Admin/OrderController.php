@@ -124,4 +124,36 @@ class OrderController extends Controller
             'success' => 'Success'
         ]);
     }
+
+    public function settleBalance(Request $request, Order $order)
+    {
+        $orderPayment = $order->payments()->create([
+            'type' => 'balance',
+            'order_id' => $order->id,
+            'contact_number' => $request->contact_number,
+            'referrence_number' => $request->ref_number,
+            'account_name' => $request->account_name,
+            'amount' => (float) $order->invoice->total - (float) $order->invoice->total_payment,
+            'is_verified' => 1,
+        ]);
+
+        $invoice = $orderPayment->order->invoice;
+        $totalPayment = (float) $invoice->total_payment + (float) $orderPayment->amount;
+
+        $orderPayment->order()->update([
+            'payment_status' => 'payment-settled',
+            'status' => 'pick-up',
+        ]);
+
+        $orderPayment->order->invoice()->update([
+            'total_payment' => (float) $totalPayment,
+            'is_paid' => Str::lower($orderPayment->order->payment_status) === 'payment settled' ? true : false,
+        ]);
+
+        $route = route('admin.order.index', ['status' => 'pick-up']);
+        
+        return response()->json([
+            'route' => $route,
+        ]);
+    }
 }

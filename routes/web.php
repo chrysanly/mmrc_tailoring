@@ -69,6 +69,7 @@ Route::middleware('auth')->group(function () {
             Route::prefix('api')->group(function () {
                 Route::get('/view/{order}', [AdminOrderController::class, 'viewOrder'])->name('admin.order.view');
                 Route::post('/payment/verified/{orderPayment}', [AdminOrderController::class, 'paymentVerified'])->name('admin.order.payment.verified');
+                Route::post('/payment/settle-balance/{order}', [AdminOrderController::class, 'settleBalance'])->name('admin.order.payment.settle-balance');
                 Route::patch('/invoice/discount/{orderInvoice}', [AdminOrderController::class, 'discount'])->name('admin.order.discount');
             });
         });

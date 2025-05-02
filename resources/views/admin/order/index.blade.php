@@ -41,6 +41,7 @@
 
 @push('scripts')
     <script src="{{ asset('assets/admin/js/order.js') }}"></script>
+    <script src="{{ asset('assets/admin/js/order/settle-balance.js') }}"></script>
     <script src="{{ asset('assets/admin/js/order/view.js') }}"></script>
     <script src="{{ asset('assets/admin/js/order/print.js') }}"></script>
 @endpush
@@ -293,6 +294,27 @@
                     <button type="button" class="btn btn-secondary" id="discountBackButton"
                         data-bs-dismiss="modal">Back</button>
                     <button type="button" class="btn btn-primary" id="discountSaveButton">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="settleBalanceModal" data-bs-backdrop="static" tabindex="-1"
+        aria-labelledby="settleBalanceModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="settleBalanceModalLabel">Settle Balance</h1>
+                </div>
+                <div class="modal-body">
+                    <x-admin.input-field name="contact_number" type="number" label="Contact Number" />
+                    <x-admin.input-field name="ref_number" type="number" label="Referrence Number" />
+                    <x-admin.input-field name="account_name" type="text" label="Account Name" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="settleBalanceCancelBtn"
+                        data-bs-dismiss="modal">Back</button>
+                    <button type="button" class="btn btn-primary" id="settleBalanceSaveBtn">Settle Balance</button>
                 </div>
             </div>
         </div>

@@ -82,18 +82,19 @@ function fetchPaymentDetails(id) {
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="card-title">Invoice</div>
-                            <div>
-                                ${!invoice.is_paid && data.status === 'pending' ? `
-                                        <button type="button" class="btn btn-outline-primary btn-sm print-hidden" onclick="addDiscount('${invoice.id}')">
-                                            ${invoice.discount === null ? 'Add' : 'Update'} Discount (%)
-                                        </button>
-                                    ` : `
-                                        <span class="badge text-bg-success print-hidden">Paid</span>
-                                    `}
+                                    <div>
+                                        ${!invoice.is_paid && data.status === 'pending' ? `
+                                                <button type="button" class="btn btn-outline-primary btn-sm print-hidden" onclick="addDiscount('${invoice.id}')">
+                                                    ${invoice.discount === null ? 'Add' : 'Update'} Discount (%)
+                                                </button>
+                                            ` : `
+                                                <span class="badge text-bg-success print-hidden">Paid</span>
+                                            `}
 
-                            <button type="button" class="btn btn-sm btn-secondary print-hidden" onclick="printModalContent()">Print</button>
-                            </div>
-                                    
+                                    <button type="button" class="btn btn-sm btn-secondary print-hidden" onclick="printModalContent()">Print</button>
+                                        ${data.status === 'done' ?  `<button type="button" class="btn btn-sm btn-outline-success print-hidden" onclick="settleBalanceModal('${data.id}')">Settle Balance</button>` : ''}
+                                
+                                    </div>
                             </div>
                         </div> 
                         <div class="card-body">
