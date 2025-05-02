@@ -32,13 +32,8 @@
             <div class="p-4 bg-light border rounded">
                 <h2 class="text-dark">Dear Customer,</h2>
                 <p class="text-secondary">
-                    @if ($order->order_type === 'Customized')
-                        We are pleased to inform you that your customized order has been completed and is now ready.
-                        Our tailoring team has worked diligently to ensure everything meets your expectations.
-                    @else
-                        We are pleased to inform you that your ready-made order has been completed and is now ready.
-                        Our tailoring team has worked diligently to ensure everything meets your expectations.
-                    @endif
+                    Good day! We’re pleased to inform you that your order is Done. <br>
+                    Kindly settle the remaining balance while you await the pickup status of your order.
                 </p>
                 <p class="text-secondary">
                     Thank you for choosing <strong>MMRC Tailoring</strong>! We truly appreciate your trust in our services,
