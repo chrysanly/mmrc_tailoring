@@ -17,9 +17,7 @@
                             </div>
                             <div class="d-flex flex-column">
                                 <span class="fw-bold">Time</span>
-                                {{ \Carbon\Carbon::parse($appointment->time_from)->format('g:i A') .
-                                    ' - ' .
-                                    \Carbon\Carbon::parse($appointment->time_to)->format('g:i A') }}
+                                {{ $appointment->time }}
                             </div>
                         </div>
                         <div class="d-flex flex-column text-end">
