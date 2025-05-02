@@ -50,7 +50,7 @@
                     }
                     if (data?.bottom !== "N/A") {
                         $("#bottom").val(data.bottom.toLowerCase());
-                        $("#hiddenBottom").val(data.top.toLowerCase());
+                        $("#hiddenBottom").val(data.bottom.toLowerCase());
                         if (data.set.toLowerCase() === 'set-1' || data.set.toLowerCase() === 'set-2' || data.set.toLowerCase() === 'set-3') {
                             $("#bottom").prop("disabled", true);
                         }else {
@@ -62,7 +62,6 @@
                     if (data?.top !== "N/A") {
                         $("#top").val(data.top.toLowerCase());
                         $("#hiddenTop").val(data.top.toLowerCase());
-                        
                         if (data.set.toLowerCase() === 'set-1' || data.set.toLowerCase() === 'set-2' || data.set.toLowerCase() === 'set-3') {
                             $("#top").prop("disabled", true);
                         }else {
@@ -74,7 +73,6 @@
                     if (data?.school !== "N/A") {
                         $("#school").val(data.school);
                     }
-                    
                 })
                 .catch(error => {
                     console.error("Error fetching available time:", error);
