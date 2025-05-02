@@ -14,6 +14,7 @@ trait AvailableTimeTrait
         $data = $request->date;
         $appointmentDate = Carbon::parse($request->date);
         $appointments = Appointment::where('date', $data)
+            ->whereNull('cancelled_at')
             ->get()->pluck('time')->toArray();
 
         // Start time and End time for the appointment slots

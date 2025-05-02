@@ -38,11 +38,13 @@ class AppointmentController extends Controller
     public function getAllAppointments()
     {
         $appointments = Appointment::selectRaw('date, MAX(id) as id, MAX(user_id) as user_id')
-            ->groupBy('date')
-            ->with(['appointments' => function ($query) {
-                $query->select(['date','time', 'status', 'user_id']);
-            }])
-            ->get();
+    ->whereNull('cancelled_at') // Exclude canceled appointments
+    ->groupBy('date')
+    ->with(['appointments' => function ($query) {
+        $query->select(['date', 'time', 'status', 'user_id'])
+              ->whereNull('cancelled_at'); // Ensure related appointments are also non-cancelled
+    }])
+    ->get();
 
         return response()->json([
             'appointments' => AppointmentResource::collection($appointments),
@@ -72,6 +74,7 @@ class AppointmentController extends Controller
 
         $checkExistingAppointment = Appointment::where('date', $request->date)
             ->where('user_id', auth()->id())
+            ->whereNull('cancelled_at')
             ->first();
 
         if ($checkExistingAppointment) {
