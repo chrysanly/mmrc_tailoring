@@ -1,20 +1,22 @@
 <?php
 
+use App\Models\User;
+use App\Models\Settings;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\User\AppointmentController;
-use App\Http\Controllers\Authentication\SessionController;
-use App\Http\Controllers\Authentication\RegisteredUserController;
-use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentController;
-use App\Http\Controllers\Admin\OrderController as AdminOrderController;
-use App\Http\Controllers\Admin\Settings\AppointmentLimitController;
-use App\Http\Controllers\Admin\Settings\PaymentController;
-use App\Http\Controllers\Admin\Settings\PercentageController;
-use App\Http\Controllers\Admin\SettingsController;
-use App\Http\Controllers\Admin\UniformPriceController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\User\OrderController;
-use App\Models\Settings;
+use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\User\AppointmentController;
+use App\Http\Controllers\Admin\UniformPriceController;
+use App\Http\Controllers\Admin\Settings\PaymentController;
+use App\Http\Controllers\Authentication\SessionController;
+use App\Http\Controllers\Admin\Settings\PercentageController;
+use App\Http\Controllers\Authentication\RegisteredUserController;
+use App\Http\Controllers\Admin\Settings\AppointmentLimitController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -122,7 +124,7 @@ Route::middleware('auth')->group(function () {
         });
     });
 
-    Route::prefix('user')->middleware('role.user')->group(function () {
+    Route::prefix('user')->middleware(['role.user','verified'])->group(function () {
         Route::prefix('appointment')->group(function () {
             Route::get('/', [AppointmentController::class, 'index'])->name('user.appointment.index');
             Route::get('/my-appointment', [AppointmentController::class, 'viewMyAppointment'])->name('user.appointment.my-appointment');
@@ -152,3 +154,26 @@ Route::middleware('auth')->group(function () {
         
     });
 });
+
+Route::get('/verify-email/{user}/{token}', function (User $user, $token) {
+    if (!$user || $user->verification_token !== $token) {
+        return redirect('/')->with('error', 'Invalid verification token.');
+    }
+
+    $user->update([
+        'email_verified_at' => now(),
+        'verification_token' => null
+    ]);
+
+    $signedUrl = URL::temporarySignedRoute('verification.success', now()->addMinutes(5));
+
+    return redirect($signedUrl);
+})->name('verify.email');
+
+Route::get('/verification-success', function () {
+    if (!request()->hasValidSignature()) {
+        return redirect('/')->with('error', 'Link expired or invalid.');
+    }
+
+    return view('verification-success'); // Show success message
+})->name('verification.success');

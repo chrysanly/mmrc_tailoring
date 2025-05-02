@@ -27,6 +27,14 @@ class SessionController extends Controller
             ]);
         }
 
+        if (!auth()->user()->hasVerifiedEmail()) {
+            Auth::logout();
+            throw ValidationException::withMessages([
+                'email' => 'Please verify your email before logging in.',
+            ]);
+        }
+    
+
         request()->session()->regenerate();
 
         return auth()->user()->role === 'superadmin' ? redirect('/admin/dashboard') : redirect('/');
