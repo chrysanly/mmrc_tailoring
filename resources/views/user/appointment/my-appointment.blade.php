@@ -40,6 +40,9 @@
                             @elseif($appointment->status === 'no-show')
                                 <span
                                     class="badge text-bg-danger rounded-pill">{{ ucwords(str_replace('-', ' ', $appointment->status)) }}</span>
+                            @elseif($appointment->status === 'pick-up')
+                                <span
+                                    class="badge text-bg-warning rounded-pill">{{ ucwords(str_replace('-', ' ', $appointment->status)) }}</span>
                             @else
                                 <span class="badge text-bg-danger rounded-pill">Cancelled</span>
                             @endif
