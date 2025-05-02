@@ -33,7 +33,8 @@
                 <h2 class="text-dark">Dear Customer,</h2>
                 <p class="text-secondary">
                     Good day! We’re pleased to inform you that your order is Done. <br>
-                    Kindly settle the remaining balance while you await the pickup status of your order.
+                    Please settle the remaining balance (₱{{ number_format($order->invoice->total - $order->invoice->total_payment, 2) }}) through Gcash and PayMaya or <br>
+                    at our store while waiting for the pickup status of your order.
                 </p>
                 <p class="text-secondary">
                     Thank you for choosing <strong>MMRC Tailoring</strong>! We truly appreciate your trust in our services,
