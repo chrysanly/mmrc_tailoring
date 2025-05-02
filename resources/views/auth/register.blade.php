@@ -8,12 +8,7 @@
                     <img src="{{ asset('assets/images/illustrator_1.png') }}" class="rounded-3" id="illustrator" alt="">
                 </div>
                 <div class="col-md-10 mx-auto col-lg-5">
-                    @if(session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
+                    
                     <form class="p-4 p-md-5 border rounded-5 bg-body-tertiary" method="POST"
                         action="{{ route('register.store') }}">
                         @csrf

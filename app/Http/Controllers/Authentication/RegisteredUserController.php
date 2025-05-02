@@ -43,6 +43,6 @@ class RegisteredUserController extends Controller
         Mail::to($user->email)->send(new VerificationMail($user));
 
 
-        return redirect()->back()->with('success', 'User Registered, Please Verify your email to proceed.');
+        return redirect()->route('login')->with('success', 'User Registered, Please Verify your email to proceed.');
     }
 }
