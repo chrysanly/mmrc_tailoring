@@ -177,10 +177,11 @@
                                                         @endif
 
                                                         @if (
-                                                            $order->status === 'done' &&
+                                                                $order->status === 'done' &&
                                                                 Str::lower($order->payment_status) === 'payment settled' &&
                                                                 !$order->payments->isEmpty() &&
-                                                                $order->payments->last()->type === 'fullpayment')
+                                                                in_array($order->payments->last()->type, ['fullpayment', 'balance']) // Allow both payment types
+                                                            )
                                                             <x-admin.order-update-status :id="$order->id" icon="bi-truck"
                                                                 status="pick-up" button="Move to Pick Up" />
                                                         @endif

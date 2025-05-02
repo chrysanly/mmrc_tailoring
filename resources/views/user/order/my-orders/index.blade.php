@@ -158,12 +158,21 @@
                                         your patience!
                                     @endif
                                     @if ($order->status === 'done' && !$order->payments->isEmpty() && $order->payments->first()->type === 'downpayment')
+                                        Your payment has been successfully verified. You will receive a notification once your order is ready for pickup. Thank you for your patience!
+                                    @endif
+                                    @if ($order->status === 'pick-up' && !$order->payments->isEmpty() && $order->payments->first()->type === 'downpayment')
                                         Your balance payment is verified. you may pick up your order and update the
                                         status to "Mark as Completed" to
                                         finalize your transaction.
                                         Thank you for your cooperation!
                                     @endif
                                     @if ($order->status === 'done' && !$order->payments->isEmpty() && $order->payments->first()->type === 'fullpayment')
+                                        Your order is now ready for pick-up. <br>
+                                        You will receive a notification once it is available. <br>
+                                        Please update the status to 'Mark as Completed' after picking up your order to finalize your transaction. <br>
+                                        Thank you for your cooperation!
+                                    @endif
+                                    @if ($order->status === 'pick-up' && !$order->payments->isEmpty() && $order->payments->first()->type === 'fullpayment')
                                         Your order is marked as done and ready for pickup. <br> Please update the status
                                         to 'Mark as Completed' once the
                                         order has been picked up to finalize your transaction. <br> Thank you for your
@@ -188,7 +197,7 @@
                                                 </a>
                                             </li>
                                         @endif
-                                        @if ($order->status === 'done' && $order->payment_status === 'Payment Settled')
+                                        @if ($order->status === 'pick-up' && $order->payment_status === 'Payment Settled')
                                             <li>
                                                 <a class="dropdown-item"
                                                     href="{{ route('user.order.mark-as-complete', [$order]) }}">Mark
